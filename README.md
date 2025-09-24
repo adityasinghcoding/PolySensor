@@ -13,10 +13,10 @@
         It's powered by the LLM which utilizes the RAG technique. </br>
         Capable to analyze the textual information from: </br>
         <h4 align="left"> 
-            _text_ </br>
-            _audio_ </br>
-            _image_ </br>
-            _video_ </br>
+            - _text_ </br>
+            - _audio_ </br>
+            - _image_ </br>
+            - _video_ </br>
         </h4>
     </h2>
 </div>
