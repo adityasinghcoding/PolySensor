@@ -153,7 +153,16 @@ if __name__ == "__main__":
     audio_data = None
     video_audio_data = None, None
 
-    if not file_path.lower().endswith(('.mp3', '.wav', '.flac', '.aiff', '.mp4', '.mkv')):
+    extensions = (
+    '.cwk', '.mcw', '.csv', '.dif', '.dbf', '.eml', '.msg', '.p7s', '.epub',
+    '.htm', '.html', '.bmp', '.heic', '.prn', '.tiff',
+    '.md', '.odt', '.org', '.eth', '.pbd', '.sdp', '.pdf', '.txt', '.pot',
+    '.ppt', '.pptm', '.pptx', '.rst', '.rtf', '.et', '.fods', '.mw', '.xls',
+    '.xlsx', '.sxg', '.tsv', '.abw', '.doc', '.docm', '.docx', '.dot', '.dotm',
+    '.hwp', '.zabw', '.xml'
+    )
+
+    if file_path.lower().endswith(extensions):
         doc_json_data = unstructured_doc_extraction(file_path)
         
     if file_path.lower().endswith(('.mp3', '.wav', '.flac', '.aiff')):
