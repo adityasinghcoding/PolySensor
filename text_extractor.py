@@ -149,8 +149,8 @@ if __name__ == "__main__":
     file_path = file_path.replace('"', '').strip()
 
     unstructured_doc_json_data = None
-    image_data = None
     audio_data = None
+    image_data = None
     video_audio_data = None, None
 
     extensions = (
@@ -174,16 +174,22 @@ if __name__ == "__main__":
     if file_path.lower().endswith(('.mp4', '.mkv')):
         video_audio_data = video_audio_text(file_path, interval_sec = 3)
 
-# plugging in the values(function outputs) to prompts to feed into llm 
-if doc_json_data is not None:
-    final_doc_prompt = JSON_DOCUMENT.format(json_data = doc_json_data)
 
-if audio_data is not None:
-    final_audio_prompt = AUDIO_TEXT.format(audio_data = audio_data)
+    final_doc_prompt = ""
+    final_audio_prompt = ""
+    final_image_prompt = ""
+    final_video_prompt = ""
+    
+    # plugging in the values(function outputs) to prompts to feed into llm 
+    if unstructured_doc_json_data is not None:
+        final_doc_prompt = JSON_DOCUMENT.format(json_data = doc_json_data)
 
-if image_data is not None:
-    final_image_prompt = IMAGE_TEXT.format(image_data = image_data)
+    if audio_data is not None:
+        final_audio_prompt = AUDIO_TEXT.format(audio_data = audio_data)
 
-if video_audio_data is not None:
-    final_video_prompt = VIDEO_TEXT.format(video_audio_data = video_audio_data)
+    if image_data is not None:
+        final_image_prompt = IMAGE_TEXT.format(image_data = image_data)
+
+    if video_audio_data is not None:
+        final_video_prompt = VIDEO_TEXT.format(video_audio_data = video_audio_data)
 

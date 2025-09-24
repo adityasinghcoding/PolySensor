@@ -9,10 +9,12 @@ from text_extractor import (final_audio_prompt, final_doc_prompt, final_image_pr
 
 load_dotenv() # loading the environment variables from .env
 
+print("Enter the API key:\n")
+
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 if not GOOGLE_API_KEY:
-   print("Enter the API key:\n")
+   print("Enter the API key again!\n")
    GOOGLE_API_KEY = input()
 
 llm = ChatGoogleGenerativeAI(model='gemini-2.5-pro', google_api_key = GOOGLE_API_KEY)
