@@ -1,0 +1,19 @@
+unstructured[all-docs]
+huggingface_hub[hf_xet]
+pytesseract
+Pillow
+SpeechRecognition
+pydub
+pillow
+moviepy
+numpy
+lanchain-google-genai
+
+# Python version 3.11 is recommended as of now this is the version which is supported by the 'unstructured'
+# Note: You need to manually install Tesseract OCR and FFmpeg for full functionality
+# Download Tesseract: https://github.com/UB-Mannheim/tesseract/wiki
+# Add C:\Program Files\Tesseract-OCR to your system PATH
+#
+# Download FFmpeg: https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-7.1.1-essentials_build.7z
+# Extract to C: drive and 'bin' folder to your system PATH
+# This is needed for pydub package to convert MP3 to WAV
