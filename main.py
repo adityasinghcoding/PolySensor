@@ -12,8 +12,6 @@ from text_extractor import (unstructured_doc_extraction,
 
 load_dotenv() # loading the environment variables from .env
 
-print("Enter the API key:\n")
-
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 if not GOOGLE_API_KEY:

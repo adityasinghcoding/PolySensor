@@ -1,12 +1,12 @@
 JSON_DOCUMENT = '''
-You're a helpful AI assistant who analyzes any type of content. Give the following structured document data in JSON format,
-provide a clear and concise summary highlighting the key points, main topic,
+You're a helpful AI assistant who analyzes any type of content. 
+Provide a clear and concise summary highlighting the key points, main topic,
 and any important details.
 
 JSON Document Data: {doc_json_data}
 
-Please analyze the content, summarize the key points, and provide any actionable insights.
-You may also highlight unclear or ambiguous portions
+Please analyze the content, summarize and provide any analytical and actionable insights.
+You may also highlight unclear or ambiguous portions but in short format.
 '''
 
 AUDIO_TEXT =  '''
@@ -15,8 +15,8 @@ Below is the transcription of audio from audio source, you have to analyze it:
 
 Audio Text Data: {audio_data}
 
-Please analyze the content, summarize the key points, and provide any actionable insights.
-You may also highlight unclear or ambiguous portions.
+Please analyze the content, summarize and provide any analytical and actionable insights.
+You may also highlight unclear or ambiguous portions but in short format.
 '''
 
 IMAGE_TEXT =  '''
@@ -25,8 +25,8 @@ Below is the extracted text from image source, you have to analyze it:
 
 Image Text Data: {image_data}
 
-Please analyze the content, summarize the key points, and provide any actionable insights.
-You may also highlight unclear or ambiguous portions.
+Please analyze the content of image, summarize and provide any analytical and actionable insights.
+You may also highlight unclear or ambiguous portions but in short format.
 '''
 
 VIDEO_TEXT = '''
@@ -35,9 +35,8 @@ Below is combined extracted text from a video:
 
 Video (frame OCR) text and Audio (transcription) text data: {video_audio_data}
 
-Please analyze the content of the video, highlighting key points, themes, and any actionable insights.
-If there are any unclear or ambiguous parts, mention them as well.
-
+Please analyze the content of the video, summarize and provide any analytical and actionable insights.
+You may also highlight unclear or ambiguous portions but in short format.
 '''
 
 
