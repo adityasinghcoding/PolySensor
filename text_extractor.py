@@ -176,14 +176,14 @@ if __name__ == "__main__":
 
 # plugging in the values(function outputs) to prompts to feed into llm 
 if doc_json_data is not None:
-    JSON_DOCUMENT.format(json_data = doc_json_data)
+    final_doc_prompt = JSON_DOCUMENT.format(json_data = doc_json_data)
 
 if audio_data is not None:
-    AUDIO_TEXT.format(audio_data = audio_data)
+    final_audio_prompt = AUDIO_TEXT.format(audio_data = audio_data)
 
-if audio_data is not None:
-    IMAGE_TEXT.format(image_data = image_data)
+if image_data is not None:
+    final_image_prompt = IMAGE_TEXT.format(image_data = image_data)
 
 if video_audio_data is not None:
-    VIDEO_TEXT.format(video_audio_data = video_audio_data)
+    final_video_prompt = VIDEO_TEXT.format(video_audio_data = video_audio_data)
 
