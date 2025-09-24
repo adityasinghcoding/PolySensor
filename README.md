@@ -23,7 +23,7 @@
 
 ## Features
 
-Info Analyzer supports:
+Content Analyzer supports:
 
 - 💯&nbsp;Text.
 - 🎨&nbsp;Audio.
