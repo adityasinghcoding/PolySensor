@@ -8,8 +8,7 @@ from PIL import Image
 import moviepy.editor as mpe
 import numpy as np
 
-from prompts import JSON_DOCUMENT, AUDIO_TEXT, VIDEO_TEXT
-
+from prompts import JSON_DOCUMENT, AUDIO_TEXT, VIDEO_TEXT, IMAGE_TEXT
 
 def mp3_to_wav(mp3_file, wav_file):
     mp3 = AudioSegment.from_mp3(mp3_file)
@@ -31,12 +30,13 @@ def video_audio_text(video, interval_sec= 3):
 
         # Applying OCR on video frames
         frame = Image.open(frame_path)
-        ocr_text = pt.image_to_string(frame)
-        print(f"OCR Text at {i} seconds:\n {ocr_text}\n{"-"*30}")
+        video_text = pt.image_to_string(frame)
+        # print(f"OCR Text at {i} seconds:\n {video_text}\n{"-"*30}")
+        # return video_text
 
 
     # now processing the audio of video
-    video_audio = "temp_audio.wav"
+    video_audio = f"{video.filename}_audio.wav"
     video.audio.write_audiofile(video_audio) #writing the audio file
 
     recognizer = sr.Recognizer()
@@ -46,9 +46,21 @@ def video_audio_text(video, interval_sec= 3):
 
     try:
         video_audio_text = recognizer.recognize_google(video_audio_record)
-        print("Extracted Text in audio of the video:\n", video_audio_text)
+        # print("Extracted Text in audio of the video:\n", video_audio_text)
     except Exception as e:
         print(f"Speech Recognition Error: {e}")
+
+    try:
+        if not video_text:
+            print("Text in video couldn't processed\n")
+
+        if not video_audio_text:
+            print("Text in Audio of video couldn't processed\n")
+        
+        return video_text, video_audio_text
+    
+    except Exception as e:
+        print(f"Error in processing Video and Audio: {e}\n")
 
 def audio_text(audio):
     try:
@@ -61,12 +73,12 @@ def audio_text(audio):
         if audio.lower().endswith(('.wav', '.flac', '.aiff')):
             recognizer = sr.Recognizer()
             with sr.AudioFile(input_file) as source:
-                audio_data = recognizer.record(source)
+                audio_wav = recognizer.record(source)
             try:
                 # Using the Google Speech Recognition
-                audio_text = recognizer.recognize_google(audio_data)
-                print("Audio Transcribbed\n", audio_text)
-                # return audio_text
+                audio_text = recognizer.recognize_google(audio_wav)
+                # print("Audio Transcribbed\n", audio_text)
+                return audio_text
             except sr.UnknownValueError: 
                 print("Speech Recognition could not understand the audio!")
                 return ""
@@ -76,78 +88,92 @@ def audio_text(audio):
     except Exception as e:
         print(f"Error loading file: {e}")
 
-
-def text_extraction(input_file):
-    # Normalize the file path to handle special characters
-    input_file = os.path.normpath(input_file)
+def image_text(image):
+    image = os.path.normpath(image)
     # Check if the file exists
-    if not os.path.exists(input_file):
-        print(f"File does not exist: {input_file}")
-        return
+    if not os.path.exists(image):
+        print(f"File does not exist: {image}")
+        return ""    
+          
+    try:
+        # if the result list (from partition), convert to json and show both
+        if image.lower().endswith(('.jpg', '.JPEG', '.jpeg', '.PNG', '.png')):
+            img = Image.open(image)
+            img_text = pt.image_to_string(img)
+            # print("\n", img_text)
+            return img_text
+    except Exception as e:
+        print(f"Error loading {image}\n {e}")
+
+def unstructured_doc_extraction(doc):
+    # Normalize the file path to handle special characters
+    doc = os.path.normpath(doc)
+    # Check if the file exists
+    if not os.path.exists(doc):
+        print(f"File does not exist: {doc}")
+        return ""
             
     try:
-        if input_file.lower().endswith(('.mp4', '.mkv')):
-            print("Processing the audio and video...\n")
-            video_audio_text(input_file, interval_sec=3)
+        unstructured_doc = partition(filename=doc)
+        # print("File Loaded\n")
 
-            # if the result list (from partition), convert to json and show both
-        if input_file.lower().endswith(('.jpg', '.JPEG', '.jpeg', '.PNG', '.png')):
-            img = Image.open(input_file)
-            img_text = pt.image_to_string(img)
-            print("\n", img_text)
+        if isinstance(unstructured_doc, list):
+            json_output = elements_to_json(unstructured_doc)
+            # print("Json Output: \n")
+            # print(json_output)
+            # print("\n Text Content:\n")
 
-        elif not input_file.lower().endswith(('.mp3', '.wav', '.mp4', '.mkv')):
-            text = partition(filename=input_file)
-            print("File Loaded\n")
+            # converting the items which are in object in partition form into string
+            for items_objects in unstructured_doc:
+                try:
+                    items_string = str(items_objects)
+                    if items_string:
+                        # print(items)
+                        return items_string
+                    else:
+                        print("Failed to convert list into string\n")
+                except Exception:
+                    continue        
 
-            if isinstance(text, list):
-                json_output = elements_to_json(text)
-                print("Json Output: \n")
-                print(json_output)
-
-                print("\n Text Content:\n")
-
-                # converting the items which are in object in partition form into string
-                for items_objects in text:
-                    try:
-                        items = str(items_objects)
-                        if items:
-                            print(items)
-                    except Exception:
-                        continue        
-
-            elif isinstance(text, str): # Audio text or error
-                print("\n\n", text)
-            else:
-                print("No extractable content or error occurred.\n")
+        elif isinstance(unstructured_doc, str): # Audio text or error
+            # print("\n\n", unstructured_doc)
+            return unstructured_doc
+        else:
+            print("No extractable content or error occurred.\n")
     
     except Exception as e:
         print(f"Error loading file: {e}")
                 
-
 if __name__ == "__main__":
     file_path = input("Give path of the file without '':\n")
     file_path = file_path.replace('"', '').strip()
 
-    text_json_data = None
+    unstructured_doc_json_data = None
+    image_data = None
     audio_data = None
-    video_audio_data = None
+    video_audio_data = None, None
 
     if not file_path.lower().endswith(('.mp3', '.wav', '.flac', '.aiff', '.mp4', '.mkv')):
-        text_json_data = text_extraction(file_path)
+        doc_json_data = unstructured_doc_extraction(file_path)
         
     if file_path.lower().endswith(('.mp3', '.wav', '.flac', '.aiff')):
         audio_data = audio_text(file_path)
+        
+    if file_path.lower().endswith(('.jpg', '.JPEG', '.png', '.PNG')):
+        image_data = image_text(file_path)
 
     if file_path.lower().endswith(('.mp4', '.mkv')):
         video_audio_data = video_audio_text(file_path, interval_sec = 3)
 
 # plugging in the values(function outputs) to prompts to feed into llm 
-if text_json_data is not None:
-    JSON_DOCUMENT.format(json_data = text_json_data)
+if doc_json_data is not None:
+    JSON_DOCUMENT.format(json_data = doc_json_data)
 
 if audio_data is not None:
     AUDIO_TEXT.format(audio_data = audio_data)
+
+if audio_data is not None:
+    IMAGE_TEXT.format(image_data = image_data)
 
 if video_audio_data is not None:
     VIDEO_TEXT.format(video_audio_data = video_audio_data)
