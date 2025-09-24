@@ -2,3 +2,20 @@
     <source media="(prefers-color-scheme: dark)" alt="Content Analyzer" srcset="" />
     <img alt="Content Analyzer" src="" />
 </picture>
+
+<h4 align="center">
+    <a href="">Content Analyzer</a>
+</h4>
+
+<div align="center">
+    <h2>
+        A **Content Analyzer** which supports wide range of content especially textual content. </br>
+        It's powered by the LLM which utilizes the RAG technique. </br>
+        Capable to analyze the textual information from: </br>
+        _text_ </br>
+        _audio_ </br>
+        _image_ </br>
+        _video_ </br>
+    </h2>
+</div>
+
