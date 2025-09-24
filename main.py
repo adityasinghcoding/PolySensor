@@ -15,10 +15,10 @@ if not GOOGLE_API_KEY:
 
 llm = ChatGoogleGenerativeAI(model='gemini-2.5-pro', google_api_key = GOOGLE_API_KEY)
 
-document_prompt = PromptTemplate(input_variables=['json_data'], template=JSON_DOCUMENT)
+document_prompt = PromptTemplate(input_variables=['doc_json_data'], template=JSON_DOCUMENT)
 audio_prompt = PromptTemplate(input_variables=['audio_data'], template=AUDIO_TEXT)
-video_prompt = PromptTemplate(input_variables=['video_data'], template=VIDEO_TEXT)
 image_prompt = PromptTemplate(input_variables= ['image_data'], template=IMAGE_TEXT)
+video_prompt = PromptTemplate(input_variables=['video_data'], template=VIDEO_TEXT)
 
 document_chain = LLMChain(llm=llm, prompt = document_prompt)
 image_chain = LLMChain(llm=llm, prompt = image_prompt)
