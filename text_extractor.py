@@ -7,6 +7,8 @@ import pytesseract as pt
 from PIL import Image
 import moviepy.editor as mpe
 import numpy as np
+import tempfile
+import shutil
 
 from prompts import JSON_DOCUMENT, AUDIO_TEXT, VIDEO_TEXT, IMAGE_TEXT
 
@@ -15,57 +17,63 @@ def mp3_to_wav(mp3_file, wav_file):
     mp3.export(wav_file, format= "wav")
 
 def video_audio_text(video, interval_sec= 3):
-    video_text_combined = [] # list for collecting the text from all(interval 3sec) frames of video
-
-    video = mpe.VideoFileClip(video)
-    # making the folder for the frames
-    video_folder = os.path.splitext(os.path.basename(video.filename))[0] + "_frames"
-    os.makedirs(video_folder, exist_ok=True)
-    print(f"Extracting the frames every {interval_sec} seconds to folder: {video_folder}")
-
-    timestamps = np.arange(0, video.duration, interval_sec)
-
-    for i in timestamps:
-        frame_path = os.path.join(video_folder, f"frame{int(i)}.jpg")
-        video.save_frame(frame_path, i)
-        print(f"Saved frame at {i}, seconds: {frame_path}")
-
-        # Applying OCR on video frames
-        frame = Image.open(frame_path)
-        video_text = pt.image_to_string(frame)
-        video_text_combined.append(video_text)
-        # print(f"OCR Text at {i} seconds:\n {video_text}\n{"-"*30}")
-        # return video_text
-    video_text = "\n".join(video_text_combined)    
-
-
-    # now processing the audio of video
-    video_audio = f"{video.filename}_audio.wav"
-    video.audio.write_audiofile(video_audio) #writing the audio file
-
-    recognizer = sr.Recognizer()
-    
-    with sr.AudioFile(video_audio) as source:
-        video_audio_record = recognizer.record(source)
+    temp_dir = tempfile.mkdtemp()
 
     try:
-        video_audio_text = recognizer.recognize_google(video_audio_record)
-        # print("Extracted Text in audio of the video:\n", video_audio_text)
-    except Exception as e:
-        print(f"Speech Recognition Error: {e}")
 
-    try:
-        if not video_text:
-            print("Text in video couldn't processed\n")
+        video_text_combined = [] # list for collecting the text from all(interval 3sec) frames of video
 
-        if not video_audio_text:
-            print("Text in Audio of video couldn't processed\n")
+        video = mpe.VideoFileClip(video)
+        # making the folder for the frames
+        video_folder = os.path.splitext(os.path.basename(video.filename))[0] + "_frames"
+        os.makedirs(video_folder, exist_ok=True)
+        print(f"Extracting the frames every {interval_sec} seconds to folder: {video_folder}")
+
+        timestamps = np.arange(0, video.duration, interval_sec)
+
+        for i in timestamps:
+            frame_path = os.path.join(video_folder, f"frame{int(i)}.jpg")
+            video.save_frame(frame_path, i)
+            print(f"Saved frame at {i}, seconds: {frame_path}")
+
+            # Applying OCR on video frames
+            frame = Image.open(frame_path)
+            video_text = pt.image_to_string(frame)
+            video_text_combined.append(video_text)
+            # print(f"OCR Text at {i} seconds:\n {video_text}\n{"-"*30}")
+            # return video_text
+        video_text = "\n".join(video_text_combined)    
+
+
+        # now processing the audio of video
+        video_audio = f"{video.filename}_audio.wav"
+        video.audio.write_audiofile(video_audio) #writing the audio file
+
+        recognizer = sr.Recognizer()
         
-        return video_text, video_audio_text
-    
-    except Exception as e:
-        print(f"Error in processing Video and Audio: {e}\n")
+        with sr.AudioFile(video_audio) as source:
+            video_audio_record = recognizer.record(source)
 
+        try:
+            video_audio_text = recognizer.recognize_google(video_audio_record)
+            # print("Extracted Text in audio of the video:\n", video_audio_text)
+        except Exception as e:
+            print(f"Speech Recognition Error: {e}")
+
+        try:
+            if not video_text:
+                print("Text in video couldn't processed\n")
+
+            if not video_audio_text:
+                print("Text in Audio of video couldn't processed\n")
+            
+            return video_text, video_audio_text
+        
+        except Exception as e:
+            print(f"Error in processing Video and Audio: {e}\n")
+    finally:
+        shutil.rmtree(temp_dir)
+        
 def audio_text(audio):
     input_file = audio
     try:
