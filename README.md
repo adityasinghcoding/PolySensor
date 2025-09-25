@@ -4,7 +4,7 @@
 
 <h1 align="center">PolySensor</h1>
 
-### **AI-Powered Multi-Modal Content Intelligence**
+### **AI-Powered Multi-Modal Content Analyzer**
 
 </div>
 
