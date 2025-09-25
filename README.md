@@ -26,17 +26,10 @@
 Content Analyzer supports:
 
 - 💯&nbsp;Text.
-- 🎨&nbsp;Audio.
-- ✍️&nbsp;Image.
-- 🌓&nbsp;Video.
-- 🏗️&nbsp;Powerpoint.
-- 📷&nbsp;CSV.
-- 😀&nbsp;PDFs.
+- 🎨&nbsp;Text in Audio.
+- ✍️&nbsp;Text in Image.
+- 🌓&nbsp;Text in Video.
+- 🏗️&nbsp;Documents & Text files:
+    1. .pdf: Portable Document Format.
+    
 - 
-- 🌐&nbsp;Localization (i18n) support.
-- 🖼️&nbsp;Export to PNG, SVG & clipboard.
-- 💾&nbsp;Open format - export drawings as an `.excalidraw` json file.
-- ⚒️&nbsp;Wide range of tools - rectangle, circle, diamond, arrow, line, free-draw, eraser...
-- ➡️&nbsp;Arrow-binding & labeled arrows.
-- 🔙&nbsp;Undo / Redo.
-- 🔍&nbsp;Zoom and panning support.
