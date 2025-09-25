@@ -1,12 +1,43 @@
-# Content Analyzer
+# PolySensor 🔍
 
-A **Content Analyzer** which supports wide range of content, especially textual content.
-It's powered by the LLM which utilizes the RAG technique.
-Capable of analyzing the textual information from almmost anything.
+**AI-Powered Multi-Modal Content Intelligence**
 
-# Multi-Modal Content Analysis System
+A sophisticated Python application that leverages advanced AI to analyze and extract insights from virtually any type of media content. Built with cutting-edge technologies including LangChain and Google's Gemini model, PolySensor transforms unstructured data into actionable intelligence.
 
-A powerful Python application that uses AI to analyze and summarize various types of media files including documents, images, audio, and videos. Built with LangChain and Google's Gemini model.
+## 🌟 What Makes PolySensor Unique?
+
+### 🧠 **Intelligent Content Understanding**
+- **Multi-Modal Analysis**: Seamlessly processes documents, images, audio, and video files
+- **Advanced RAG Architecture**: Utilizes Retrieval-Augmented Generation for superior contextual understanding
+- **Universal Text Extraction**: Capable of extracting and analyzing textual information from almost any format
+
+### 🔄 **Powered by State-of-the-Art AI**
+- **Google Gemini Integration**: Harnesses the power of one of the most advanced LLMs available
+- **LangChain Orchestration**: Professional-grade AI workflow management
+- **Smart Context Awareness**: Understands content relationships and nuances
+
+### 📊 **Comprehensive Content Coverage**
+From research papers to multimedia presentations, PolySensor delivers deep analytical insights across:
+- **Academic & Technical Documents**
+- **Business Reports & Presentations** 
+- **Multimedia Content & Recordings**
+- **Visual Data & Infographics**
+
+## ⚡ Quick Start
+
+**Get started in under 2 minutes:**
+
+```bash
+# Clone & install
+git clone <your-repo-url>
+cd polysensor
+pip install -r requirements.txt
+
+# Run analysis on any file
+python main.py
+
+```
+---
 
 ## 🌟 Features
 
