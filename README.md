@@ -350,7 +350,7 @@ We welcome contributions! Please see our Contributing Guidelines for details.
 - Consider shorter intervals for video analysis
 
 ### Getting Help
-- Check existing [Issues]() for similar problems
+- Check existing [Issues](https://github.com/adityasinghcoding/PolySensor/issues) for similar problems
 - Create a new issue with detailed error messages and file examples
 
 ## 🙏 Acknowledgments
