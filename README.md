@@ -35,7 +35,7 @@ From research papers to multimedia presentations, PolySensor delivers deep analy
 
 ```bash
 # Clone & install
-git clone <your-repo-url>
+git clone https://github.com/adityasinghcoding/PolySensor.git
 cd polysensor
 pip install -r requirements.txt
 
@@ -169,7 +169,7 @@ python main.py
 
 1. **Clone the repository**
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/adityasinghcoding/PolySensor.git
 cd multi-modal-analyzer
 ```
 
