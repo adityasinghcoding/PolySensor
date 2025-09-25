@@ -389,9 +389,9 @@ This project stands on the shoulders of these amazing open-source technologies:
 
 *Built with ❤️ by Aditya Singh*
 
-[![GitHub](https://img.shields.io/badge/GitHub-Profile-blue?logo=github)](https://github.com/yourusername)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin)](https://linkedin.com/in/yourprofile)
-[![Portfolio](https://img.shields.io/badge/🌐-Portfolio-green)](https://yourportfolio.com)
+[![GitHub](https://img.shields.io/badge/GitHub-Profile-blue?logo=github)](https://github.com/adityasinghcoding)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin)](https://www.linkedin.com/in/adityasingh2022/)
+[![Portfolio](https://img.shields.io/badge/🌐-Portfolio-green)](https://adityasinghcoding.github.io/)
 
 </div>
 
