@@ -353,11 +353,47 @@ We welcome contributions! Please see our Contributing Guidelines for details.
 - Check existing [Issues](https://github.com/adityasinghcoding/PolySensor/issues) for similar problems
 - Create a new issue with detailed error messages and file examples
 
-## 🙏 Acknowledgments
-- [LangChain](https://www.langchain.com/) for LLM orchestration
-- [Google Gemini](https://deepmind.google/models/gemini/) for AI capabilities
-- [Unstructured](https://github.com/Unstructured-IO/unstructured) for document parsing
-- [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) for text extraction
+---
+
+## 👥 Credits & Acknowledgments
+
+### 🧑‍💻 Project Creator
+**Aditya Singh**  
+- Artificial Intelligence Engineer  
+- Project Lead & Full-Stack Developer
+- AI/ML Integration & Architecture Design  
+- Multi-modal Content Processing Specialist  
+
+### 🛠️ Technologies & Libraries
+This project stands on the shoulders of these amazing open-source technologies:
+
+| Technology | Purpose | Credit |
+|------------|---------|--------|
+| **Google Gemini** | AI Language Model | [Google AI](https://deepmind.google/technologies/gemini/) |
+| **LangChain** | LLM Orchestration | [LangChain AI](https://github.com/langchain-ai/langchain) |
+| **Unstructured** | Document Processing | [Unstructured IO](https://github.com/Unstructured-IO/unstructured) |
+| **SpeechRecognition** | Audio Transcription | [Uberi](https://github.com/Uberi/speech_recognition) |
+| **PyTesseract** | Image OCR | [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) |
+| **MoviePy** | Video Processing | [Zulko](https://github.com/Zulko/moviepy) |
+| **Pydub** | Audio Conversion | [Jiaaro](https://github.com/jiaaro/pydub) |
+| **Pillow** | Image Processing | [Python Pillow](https://github.com/python-pillow/Pillow) |
+
+### 🙏 Special Thanks
+- **Open Source Community** for invaluable tools and libraries
+- **Google Gemini Team** for powerful AI capabilities
+- **All Future Contributors** who will test and improve PolySensor
+
+---
+
+<div align="center">
+
+*Built with ❤️ by Aditya Singh*
+
+[![GitHub](https://img.shields.io/badge/GitHub-Profile-blue?logo=github)](https://github.com/yourusername)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin)](https://linkedin.com/in/yourprofile)
+[![Portfolio](https://img.shields.io/badge/🌐-Portfolio-green)](https://yourportfolio.com)
+
+</div>
 
 ## ⚠️ Terms of Usage:
 `
