@@ -31,20 +31,53 @@ From research papers to multimedia presentations, PolySensor delivers deep analy
 - **Multimedia Content & Recordings**
 - **Visual Data & Infographics**
 
-## ⚡ Quick Start
+---
 
-**Get started in under 2 minutes:**
-
-```bash
-# Clone & install
-git clone https://github.com/adityasinghcoding/PolySensor.git
-cd polysensor
-pip install -r requirements.txt
-
-# Run analysis on any file
-python main.py
-
+```mermaid
+graph TB
+    subgraph "📥 Input Layer"
+        A[📁 User File Input] --> B[🔄 File Type Router]
+    end
+    
+    subgraph "🔧 Extraction Layer"
+        B --> C[📄 Document Processor]
+        B --> D[🖼️ Image Processor]
+        B --> E[🎵 Audio Processor]
+        B --> F[🎬 Video Processor]
+        
+        C --> C1[Unstructured<br/>Partition]
+        D --> D1[PyTesseract<br/>OCR]
+        E --> E1[SpeechRecognition<br/>Library]
+        F --> F1[Frame Extraction<br/>+ Audio Separation]
+    end
+    
+    subgraph "🤖 AI Processing Layer"
+        C1 --> G[🔄 Content Aggregator]
+        D1 --> G
+        E1 --> G
+        F1 --> G
+        
+        G --> H[💬 Prompt Engine<br/>LangChain Templates]
+        H --> I[🧠 LLM Gateway<br/>Google Gemini API]
+    end
+    
+    subgraph "📊 Output Layer"
+        I --> J[📈 Analysis Results]
+        J --> K[💡 Formatted Output<br/>Summaries & Insights]
+    end
+    
+    %% Styling with better contrast
+    classDef input fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000000
+    classDef extraction fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px,color:#000000
+    classDef ai fill:#fff3e0,stroke:#ef6c00,stroke-width:2px,color:#000000
+    classDef output fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000000
+    
+    class A,B input
+    class C,D,E,F,C1,D1,E1,F1 extraction
+    class G,H,I ai
+    class J,K output
 ```
+
 ---
 
 ## 🌟 Features
@@ -186,6 +219,7 @@ python main.py
 </div>
 
 ---
+
 ## 🚀 Quick Start
 
 ### Prerequisites
