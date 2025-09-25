@@ -15,6 +15,8 @@ def mp3_to_wav(mp3_file, wav_file):
     mp3.export(wav_file, format= "wav")
 
 def video_audio_text(video, interval_sec= 3):
+    video_text_combined = [] # list for collecting the text from all(interval 3sec) frames of video
+
     video = mpe.VideoFileClip(video)
     # making the folder for the frames
     video_folder = os.path.splitext(os.path.basename(video.filename))[0] + "_frames"
@@ -31,8 +33,10 @@ def video_audio_text(video, interval_sec= 3):
         # Applying OCR on video frames
         frame = Image.open(frame_path)
         video_text = pt.image_to_string(frame)
+        video_text_combined.append(video_text)
         # print(f"OCR Text at {i} seconds:\n {video_text}\n{"-"*30}")
         # return video_text
+    video_text = "\n".join(video_text_combined)    
 
 
     # now processing the audio of video
@@ -63,6 +67,7 @@ def video_audio_text(video, interval_sec= 3):
         print(f"Error in processing Video and Audio: {e}\n")
 
 def audio_text(audio):
+    input_file = audio
     try:
         if audio.lower().endswith('.mp3'): # renaming the wav
             wav_file = audio.rsplit('.', 1)[0] + '.wav'
@@ -106,6 +111,7 @@ def image_text(image):
         print(f"Error loading {image}\n {e}")
 
 def unstructured_doc_extraction(doc):
+    
     # Normalize the file path to handle special characters
     doc = os.path.normpath(doc)
     # Check if the file exists
@@ -117,6 +123,7 @@ def unstructured_doc_extraction(doc):
         unstructured_doc = partition(filename=doc)
         # print("File Loaded\n")
 
+        all_content = []
         if isinstance(unstructured_doc, list):
             json_output = elements_to_json(unstructured_doc)
             # print("Json Output: \n")
@@ -129,7 +136,8 @@ def unstructured_doc_extraction(doc):
                     items_string = str(items_objects)
                     if items_string:
                         # print(items)
-                        return items_string
+                        all_content.append(items_string)
+                        return all_content
                     else:
                         print("Failed to convert list into string\n")
                 except Exception:
