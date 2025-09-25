@@ -1,6 +1,8 @@
 <div align="center">
 
-# 🧠 PolySensor 🔍
+<img src = "/assets/PolySensor 600px.jpg" alt="PolySensor Logo" style="height: 75%; width:auto" />
+
+<h1 align="center">PolySensor</h1>
 
 ### **AI-Powered Multi-Modal Content Intelligence**
 
