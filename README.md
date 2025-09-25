@@ -1,6 +1,12 @@
-# PolySensor 🔍
+<div align="center">
 
-**AI-Powered Multi-Modal Content Intelligence**
+# 🧠 PolySensor 🔍
+
+### **AI-Powered Multi-Modal Content Intelligence**
+
+</div>
+
+<br>
 
 A sophisticated Python application that leverages advanced AI to analyze and extract insights from virtually any type of media content. Built with cutting-edge technologies including LangChain and Google's Gemini model, PolySensor transforms unstructured data into actionable intelligence.
 
