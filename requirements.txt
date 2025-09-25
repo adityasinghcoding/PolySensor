@@ -19,3 +19,10 @@ pymilvus
 # Download FFmpeg: https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-7.1.1-essentials_build.7z
 # Extract to C: drive and 'bin' folder to your system PATH
 # This is needed for pydub package to convert MP3 to WAV
+
+
+
+# Credits:
+# Aditya Singh
+# -> GitHub: https://adityasinghcoding.github.io/
+# -> LinkedIn: https://www.linkedin.com/in/adityasingh2022/
