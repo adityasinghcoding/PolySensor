@@ -58,6 +58,48 @@ python main.py
 
 ## 📋 Supported File Formats
 
+<h2 align="center"><i>Image Files</i></h2>
+
+<div align="center">
+
+| Extension(s) | Description |
+|--------------|-------------|
+| `.jpg`, `.jpeg` | JPEG images |
+| `.png` | Portable Network Graphics |
+| `.gif` | Graphics Interchange Format |
+| `.webp` | WebP image |
+| `.heic` | High Efficiency Image Format |
+| `.tif`, `.tiff` | Tagged Image File Format |
+| `.bmp` | Bitmap Image File |
+
+</div>
+
+<h2 align="center"><i>Audio Files</i></h2>
+
+<div align="center">
+
+| Extension(s) | Description |
+|--------------|-------------|
+| `.mp3` | MPEG Audio Layer III |
+| `.wav` | Waveform Audio File Format |
+| `.flac` | Free Lossless Audio Codec |
+| `.aiff` | Audio Interchange File Format |
+
+</div>
+
+<h2 align="center"><i>Video Files</i></h2>
+
+<div align="center">
+
+| Extension(s) | Description |
+|--------------|-------------|
+| `.mp4` | MPEG-4 Part 14 Video |
+| `.mkv` | Matroska Video File |
+
+</div>
+
+---
+
 <h2 align="center"><i>Documents and Text Files</i></h2>
 
 <div align="center">
@@ -109,22 +151,6 @@ python main.py
 
 </div>
 
-<h2 align="center"><i>Image Files</i></h2>
-
-<div align="center">
-
-| Extension(s) | Description |
-|--------------|-------------|
-| `.jpg`, `.jpeg` | JPEG images |
-| `.png` | Portable Network Graphics |
-| `.gif` | Graphics Interchange Format |
-| `.webp` | WebP image |
-| `.heic` | High Efficiency Image Format |
-| `.tif`, `.tiff` | Tagged Image File Format |
-| `.bmp` | Bitmap Image File |
-
-</div>
-
 <h2 align="center"><i>Email Files</i></h2>
 
 <div align="center">
@@ -157,6 +183,7 @@ python main.py
 
 </div>
 
+---
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -294,6 +321,7 @@ The AI provides structured analysis including:
 - **Actionable Insights**: Practical recommendations
 - **Ambiguity Detection**: Identification of unclear sections
 
+---
 ## 🤝 Contributing
 We welcome contributions! Please see our Contributing Guidelines for details.
 
