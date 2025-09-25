@@ -190,7 +190,7 @@ python main.py
 
 ### Prerequisites
 
-- Python 3.11+
+- Python 3.11 _(Recommended for Unstructured)_ or can use higher version 3.11+
 - Google Gemini API key
 - Tesseract OCR (for image/text extraction)
 
