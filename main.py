@@ -15,6 +15,8 @@ from data_handling import (
    image,
    video
    )
+from io import BytesIO
+
 
 
 load_dotenv() # loading the environment variables from .env
@@ -96,22 +98,27 @@ if __name__ == "__main__":
    if file_path.lower().endswith(audio_extensions):
       audio_path = audio(file_path)
       if audio_path:
-         with open(audio_path, "rb") as aud:
-            audio_bytes = aud.read()
-            prompt_with_audio = HumanMessage([
-            {
-               'type': 'text',
-               'text': AUDIO_PROMPT
-            },
-            {
-               'type': 'audio_url', 
-               'audio_url': f'data:audio/mp3;base64, {base64.b64encode(audio_bytes).decode('utf-8')}'
-            }
-               ]
-            )
-            # Feeding the audio with prompt using json format of langchain
-            final_audio_prompt = llm.invoke([prompt_with_audio])
-            print(final_audio_prompt.content)
+         buffer = BytesIO()
+         
+         # Exporting Audio to desired format in memory without saving to disk 
+         audio_path.export(buffer, format='mp3') # mp3 or wav
+         audio_bytes = buffer.getvalue()
+
+         prompt_with_audio = HumanMessage([
+         {
+            'type': 'text',
+            'text': AUDIO_PROMPT
+         },
+         {
+            'type': 'media', 
+            'mime_type': 'audio/mp3', 
+            'data': base64.b64encode(audio_bytes).decode('utf-8')
+         }
+            ]
+         )
+         # Feeding the audio with prompt using json format of langchain
+         final_audio_prompt = llm.invoke([prompt_with_audio])
+         print(final_audio_prompt.content)
 
 
    if file_path.lower().endswith(video_extensions):

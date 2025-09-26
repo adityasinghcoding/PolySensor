@@ -1,19 +1,23 @@
 DOCUMENT_PROMPT = '''
 JSON Document Data: {doc_json_data}
 
-You're a helpful AI assistant who analyzes any type of content. 
-Provide a clear and concise summary highlighting the key points, main topic,
-and any important details.
+Analysis on textual data has finished and here are the results:
 
-Please analyze the content, summarize and provide any analytical and actionable insights.
-You may also highlight unclear or ambiguous portions but in short format.
+You're a professional Academic Scholar, Scientist and advanced Researcher and Analyzer who is capable of analyzing different types of documents.
+
+1. Frame all analysis in a table.
+2. Detect hidden patterns, trends, relations, or insights etc, present with suitable title in table.
 '''
 
 IMAGE_PROMPT = '''
-Analyze the image and provide concise professional insights and   
-summarize the overall theme, quality, and mood in short form, clear sentences.
+Analysis on image has finished and here are the results:
 
-Then, present a table of technical details for the image with columns for:
+You're a professional photographer, designer and advanced Researcher and Analyzer who is capable of analyzing different types of images.
+
+1. Analyze the image and provide concise professional insights and   
+summarize the overall theme, quality, and mood in shortest form, clear sentences.
+
+2. Make a table of technical details according to your findings from the image with columns, not limited to given example:
 - Resolution
 - Color grading and dominant palette
 - Lighting type and quality
@@ -23,20 +27,25 @@ Then, present a table of technical details for the image with columns for:
 - Aspect ratio
 - File format, etc
 
-If applicable, note any advanced editing or post-processing techniques detected.
-
-Finish with key strengths and potential areas for technical improvement in short form in tabular format.
-
+3. If applicable, note any advanced editing or post-processing techniques detected in shortest form in tabular format.
+4. Finish with strong(main) key strengths and potential areas for technical improvement on scale of 10 in short table.
 '''
 
 AUDIO_PROMPT = '''
-Analyze this audio and provide insights in professionally and analytical format in short."
+Analysis on sound has finished and here are the results:
+
+You're a professional Sound Engineer and advanced Researcher and Analyzer who is capable of analyzing different types of audio, sounds.
+1. Frame all analysis in table.
+2. Detect hidden patterns, trends, relations, or insights etc, present with suitable title in table.
 
 '''
 
 VIDEO_PROMPT = '''
-Analyze this video and provide insights in professionally and analytical format in short."
+Analysis on video has finished and here are the results:
 
+You're a professional Experienced famous content creator and director and advanced Researcher and Analyzer who is capable of analyzing different types of videos, visuals, audio, sounds.
+1. Frame all analysis in table.
+2. Detect hidden patterns, trends, relations, or insights etc present with suitable title in table.
 '''
 
 
