@@ -132,7 +132,9 @@ def audio(audio):
     try:
         audio = AudioSegment.from_file(audio)
         if len(audio) > 60*1000:  # 1 min audio length limit, pydub works on milliseconds fundamentally so feeding accordingly
-            print(f"Audio length is {len(audio) / 1000:.2f} seconds which exceeds 1 minute.\n" \
+            in_minute = len(audio) / 1000
+            in_minute = in_minute / 60
+            print(f"Audio length is {in_minute} min which exceeds 1 minute.\n" \
             "For longer audio input think once to subscribe our monthly premium!")
             return ""
         else:

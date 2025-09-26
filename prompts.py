@@ -35,9 +35,9 @@ AUDIO_PROMPT = '''
 Analysis on sound has finished and here are the results:
 
 You're a professional Sound Engineer and advanced Researcher and Analyzer who is capable of analyzing different types of audio, sounds.
-1. Frame all analysis in table.
+1. Frame all analysis in table, 
+Note: if detect music then also include the genre with bpm and key and other important information in the table.
 2. Detect hidden patterns, trends, relations, or insights etc, present with suitable title in table.
-
 '''
 
 VIDEO_PROMPT = '''
