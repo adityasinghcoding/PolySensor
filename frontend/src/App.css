@@ -1,67 +1,103 @@
 .app {
-   min-height: 100vh;
-   /* background: linear-gradient(135deg, #667eea 30%, #764ba2 100%); */
-   background-color: white;
+  min-height: 100vh;
+  background-color: white;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* center vertically */
+  transition: all 0.5s ease; /* smooth transition */
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.app.shrink {
+  justify-content: flex-start; /* move items to top */
+  padding-top: 1rem;
+  padding-bottom: 4rem; /* create space at bottom */
 }
 
 .app-header {
-   /* background: rgba(255, 255, 255, 0.1); */
-   backdrop-filter: blur(50px);
-   padding: 2rem;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   color: rgb(0, 0, 0);
-   position: relative;
+  backdrop-filter: blur(50px);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(0, 0, 0);
+  position: relative;
+  transition: all 0.5s ease;
+  flex-wrap: wrap;
+}
 
+.app.shrink .app-header {
+  justify-content: flex-start;
+  padding: 1rem 1rem 0.5rem 1rem;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  right: auto;
+  width: auto;
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .app-logo {
-   
-   height: 120px; /* Adjust the height as needed */
-   width: auto; /* Add some space between the logo and the h1 */
-   margin-right: 10px;
-   margin-bottom: 10px;
-   
+  height: 120px;
+  width: auto;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  transition: all 0.5s ease;
+}
+
+.app.shrink .app-logo {
+  height: 50px;
+  margin-right: 15px;
 }
 
 .app-header h1 {
-   font-family: 'Poppins', sans-serif;
-   margin: 0 0 0.5rem 0;
-   font-size: 6rem;
-   color: rgb(0, 0, 0);
-   position: relative;
-   /* text-shadow: 
-      0 0 10px rgba(0, 0, 0, 0.3),
-      0 0 20px rgba(0, 0, 0, 0.2),
-      0 0 30px rgba(0, 0, 0, 0.1); */
+  font-family: 'Poppins', sans-serif;
+  margin: 0 0 0.5rem 0;
+  font-size: 6rem;
+  color: rgb(0, 0, 0);
+  position: relative;
+  transition: all 0.5s ease;
+}
 
-      /* text-shadow:
-      0 0 5px #fff,
-      0 0 10px #fff,
-      0 0 20px #fff,
-      0 0 40px #0ff,
-      0 0 80px #0ff; */
-
-   }
+.app.shrink .app-header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
 
 .app-header p {
-   font-family: 'Poppins', sans-serif;
-   font-style: italic;
-   position: absolute;
-   top: 86%;
-   left: 50%;
-   transform: translateX(-50%);
-   margin: 0;
-   color: #bdbdbd;
-   /* text-shadow: 
-      0 0 10px rgba(0, 0, 0, 0.5),
-      0 0 20px rgba(0, 0, 0, 0.3),
-      0 0 30px rgba(0, 0, 0, 0.1); */
+  font-family: 'Poppins', sans-serif;
+  font-style: italic;
+  position: absolute;
+  top: 86%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  color: #bdbdbd;
+  transition: all 0.5s ease;
+}
+
+.app.shrink .app-header p {
+  position: static;
+  margin-top: 0.3rem;
+  left: auto;
+  transform: none;
+  color: #aaa;
+  font-size: 0.8rem;
 }
 
 .app-main {
-   padding: 6rem;
-   max-width: 1200px;
-   margin: 0 auto;
+  padding: 6rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  transition: all 0.5s ease;
+}
+
+.app.shrink .app-main {
+  padding-top: 8rem;
 }

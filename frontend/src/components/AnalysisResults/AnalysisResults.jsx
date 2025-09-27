@@ -3,26 +3,35 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import './AnalysisResults.css'
 
-function fixMarkdownTables(markdown) {
-    // Split input into lines
-    const lines = markdown.split('\n');
+function preprocessMarkdown(markdown) {
+   // Replace common HTML tags with markdown equivalents
+   return markdown
+      .replace(/<br\s*\/?>/gi, '  \n') // <br> to markdown line break
+      .replace(/<b>(.*?)<\/b>/gi, '**$1**') // <b> to bold
+      .replace(/<strong>(.*?)<\/strong>/gi, '**$1**') // <strong> to bold
+      .replace(/<i>(.*?)<\/i>/gi, '*$1*') // <i> to italic
+      .replace(/<em>(.*?)<\/em>/gi, '*$1*'); // <em> to italic
+}
 
-    for (let i = 0; i < lines.length - 1; i++) {
-        // Check if next line contains only dashes or colons (separator line)
-        if (/^ *:?-{3,}:? *( *\| *:?-{3,}:? *)*$/.test(lines[i+1].trim())) {
-            // If current line doesn't have pipes, add pipes around it
-            if (!lines[i].trim().startsWith('|')) {
-                lines[i] = '| ' + lines[i].trim().replace(/\s+/g, ' | ') + ' |';
-            }
-            // Ensure separator line also starts and ends with pipes
-            if (!lines[i+1].trim().startsWith('|')) {
-                const cols = lines[i].split('|').length - 2; // exclude ends
-                lines[i+1] = '|' + ' --- |'.repeat(cols);
-            }
-        }
-    }
-    // Rejoin lines and return
-    return lines.join('\n');
+function fixMarkdownTables(markdown) {
+   // First preprocess HTML tags
+   let processedMarkdown = preprocessMarkdown(markdown);
+   
+   // Rest of your existing table fixing logic...
+   const lines = processedMarkdown.split('\n');
+
+   for (let i = 0; i < lines.length - 1; i++) {
+      if (/^ *:?-{3,}:? *( *\| *:?-{3,}:? *)*$/.test(lines[i+1].trim())) {
+         if (!lines[i].trim().startsWith('|')) {
+               lines[i] = '| ' + lines[i].trim().replace(/\s+/g, ' | ') + ' |';
+         }
+         if (!lines[i+1].trim().startsWith('|')) {
+               const cols = lines[i].split('|').length - 2;
+               lines[i+1] = '|' + ' --- |'.repeat(cols);
+         }
+      }
+   }
+   return lines.join('\n');
 }
 
 function AnalysisResults({ result }) {

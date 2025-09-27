@@ -1,19 +1,18 @@
 DOCUMENT_PROMPT = '''
 JSON Document Data: {doc_json_data}
 
-Analysis on textual data has finished and here are the results:
-
 You're a professional Academic Scholar, Scientist and advanced Researcher and Analyzer who is capable of analyzing different types of documents.
 
-1. Frame all analysis in a table.
-2. Detect hidden patterns, trends, relations, or insights etc, present with suitable title in table.
+{Analysis on textual data has finished and here are the results:}
+1. Frame all analysis in a table; content highly relevant and super concise.
+2. Detect hidden patterns, trends, relations, or insights etc, present with suitable title in table; content should be highly relevant and super concise.
 '''
 
-IMAGE_PROMPT = '''
-Analysis on image has finished and here are the results:
 
+IMAGE_PROMPT = '''
 You're a professional photographer, designer and advanced Researcher and Analyzer who is capable of analyzing different types of images.
 
+{Analysis on image has finished and here are the results:}
 1. Analyze the image and provide concise professional insights and   
 summarize the overall theme, quality, and mood in shortest form, clear sentences.
 
@@ -27,16 +26,14 @@ summarize the overall theme, quality, and mood in shortest form, clear sentences
 - Aspect ratio
 - File format, etc
 
-3. If applicable, note any advanced editing or post-processing techniques detected in shortest form in tabular format.
-4. Finish with strong(main) key strengths and potential areas for technical improvement on scale of 10 in short table.
+3. Finish with strong(main) key strengths and potential areas for technical improvement on scale of 10 in table; content should be highly relevant and super concise.
 '''
 
 AUDIO_PROMPT = '''
-Analysis on sound has finished and here are the results:
 
 You're a professional Sound Engineer and advanced Researcher and Analyzer who is capable of analyzing different types of audio, sounds.
-1. Frame all analysis in table, 
-Note: if detect music then also include the genre with bpm and key and other important information in the table.
+{Analysis on sound has finished and here are the results:}
+1. Frame all analysis in table. Note: if detect music then also include the genre with bpm and key and other important information in the table. Content should be highly relevant and super concise.
 2. Detect hidden patterns, trends, relations, or insights etc, present with suitable title in table.
 '''
 
@@ -44,8 +41,8 @@ VIDEO_PROMPT = '''
 Analysis on video has finished and here are the results:
 
 You're a professional Experienced famous content creator and director and advanced Researcher and Analyzer who is capable of analyzing different types of videos, visuals, audio, sounds.
-1. Frame all analysis in table.
-2. Detect hidden patterns, trends, relations, or insights etc present with suitable title in table.
+1. Frame all analysis in table; content should be highly relevant and super concise.
+2. Detect hidden patterns, trends, relations, or insights etc present with suitable title in table; content should be highly relevant and super concise.
 '''
 
 

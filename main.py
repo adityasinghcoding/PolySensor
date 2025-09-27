@@ -60,96 +60,96 @@ CORS(app)  # this allows react app to communicate with this backend
 
 @app.route('/analyze0', methods=['POST'])
 def analyze_file():
-    try:
-        if 'file' not in request.files:
-            return jsonify({'error': 'No file provided'}), 400
+   try:
+      if 'file' not in request.files:
+         return jsonify({'error': 'No file provided'}), 400
 
-        file = request.files['file']
-        if file.filename == '':
-            return jsonify({'error': 'No file selected'}), 400
+      file = request.files['file']
+      if file.filename == '':
+         return jsonify({'error': 'No file selected'}), 400
 
-        # saving file temporarily
-        file_path = os.path.join('temp', file.filename)
-        os.makedirs('temp', exist_ok=True)
-        file.save(file_path)
+      # saving file temporarily
+      file_path = os.path.join('temp', file.filename)
+      os.makedirs('temp', exist_ok=True)
+      file.save(file_path)
 
-        result = None
+      result = None
 
-        if file_path.lower().endswith(doc_extensions):
-            doc_json_data = unstructured_doc_extraction(file_path)
-            if doc_json_data:
-                llm_doc_output = document_chain.run(doc_json_data=doc_json_data)
-                result = llm_doc_output
+      if file_path.lower().endswith(doc_extensions):
+         doc_json_data = unstructured_doc_extraction(file_path)
+         if doc_json_data:
+               llm_doc_output = document_chain.run(doc_json_data=doc_json_data)
+               result = llm_doc_output
 
-        elif file_path.lower().endswith(image_extensions):
-            image_path = image(file_path)
-            if image_path:
-                with open(image_path, "rb") as img:
-                    image_bytes = img.read()
-                    prompt_with_image = HumanMessage(
-                        content=[
-                            {
-                                'type': 'text',
-                                'text': IMAGE_PROMPT
-                            },
-                            {
-                                'type': 'image_url',
-                                'image_url': f"data:image/png;base64,{base64.b64encode(image_bytes).decode('utf-8')}"
-                            }
-                        ]
-                    )
-                    final_image_prompt = llm.invoke([prompt_with_image])
-                    result = final_image_prompt.content
+      elif file_path.lower().endswith(image_extensions):
+         image_path = image(file_path)
+         if image_path:
+               with open(image_path, "rb") as img:
+                  image_bytes = img.read()
+                  prompt_with_image = HumanMessage(
+                     content=[
+                           {
+                              'type': 'text',
+                              'text': IMAGE_PROMPT
+                           },
+                           {
+                              'type': 'image_url',
+                              'image_url': f"data:image/png;base64,{base64.b64encode(image_bytes).decode('utf-8')}"
+                           }
+                     ]
+                  )
+                  final_image_prompt = llm.invoke([prompt_with_image])
+                  result = final_image_prompt.content
 
-        elif file_path.lower().endswith(audio_extensions):
-            audio_path = audio(file_path)
-            if audio_path:
-                buffer = BytesIO()
-                audio_path.export(buffer, format='mp3')
-                audio_bytes = buffer.getvalue()
+      elif file_path.lower().endswith(audio_extensions):
+         audio_path = audio(file_path)
+         if audio_path:
+               buffer = BytesIO()
+               audio_path.export(buffer, format='mp3')
+               audio_bytes = buffer.getvalue()
 
-                prompt_with_audio = HumanMessage([
-                    {
-                        'type': 'text',
-                        'text': AUDIO_PROMPT
-                    },
-                    {
-                        'type': 'media',
-                        'mime_type': 'audio/mp3',
-                        'data': base64.b64encode(audio_bytes).decode('utf-8')
-                    }
-                ])
-                final_audio_prompt = llm.invoke([prompt_with_audio])
-                result = final_audio_prompt.content
+               prompt_with_audio = HumanMessage([
+                  {
+                     'type': 'text',
+                     'text': AUDIO_PROMPT
+                  },
+                  {
+                     'type': 'media',
+                     'mime_type': 'audio/mp3',
+                     'data': base64.b64encode(audio_bytes).decode('utf-8')
+                  }
+               ])
+               final_audio_prompt = llm.invoke([prompt_with_audio])
+               result = final_audio_prompt.content
 
-        elif file_path.lower().endswith(video_extensions):
-            video_path = video(file_path)
-            if video_path:
-                with open(video_path, "rb") as vid:
-                    video_bytes = vid.read()
-                    prompt_with_video = HumanMessage([
-                        {
-                            'type': 'text',
-                            'text': VIDEO_PROMPT
-                        },
-                        {
-                            'type': 'video_url',
-                            'video_url': f'data:video/mp4;base64,{base64.b64encode(video_bytes).decode('utf-8')}'
-                        }
-                    ])
-                    final_video_prompt = llm.invoke([prompt_with_video])
-                    result = final_video_prompt.content
+      elif file_path.lower().endswith(video_extensions):
+         video_path = video(file_path)
+         if video_path:
+               with open(video_path, "rb") as vid:
+                  video_bytes = vid.read()
+                  prompt_with_video = HumanMessage([
+                     {
+                           'type': 'text',
+                           'text': VIDEO_PROMPT
+                     },
+                     {
+                           'type': 'video_url',
+                           'video_url': f'data:video/mp4;base64,{base64.b64encode(video_bytes).decode('utf-8')}'
+                     }
+                  ])
+                  final_video_prompt = llm.invoke([prompt_with_video])
+                  result = final_video_prompt.content
 
-        if result:
-            # cleaning memory
-            os.remove(file_path)
-            return jsonify({'result': result})
-        else:
-            os.remove(file_path)
-            return jsonify({'error': 'Unsupported file type or processing failed'}), 400
+      if result:
+         # cleaning memory
+         os.remove(file_path)
+         return jsonify({'result': result})
+      else:
+         os.remove(file_path)
+         return jsonify({'error': 'Unsupported file type or processing failed'}), 400
 
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+   except Exception as e:
+      return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
    app.run(debug=True, port=5000)
