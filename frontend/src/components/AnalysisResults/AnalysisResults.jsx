@@ -4,12 +4,25 @@ import remarkGfm from 'remark-gfm';
 import './AnalysisResults.css'
 
 function fixMarkdownTables(markdown) {
-   // Add table separators if missing
-   return markdown.replace(/(\|.*\|)\n(\|.*\|)/g, (match, headerLine, firstDataLine) => {
-      const headerCells = headerLine.split('|').filter(cell => cell.trim() !== '');
-      const separator = '|' + ' --- |'.repeat(headerCells.length);
-      return headerLine + '\n' + separator + '\n' + firstDataLine;
-   });
+    // Split input into lines
+    const lines = markdown.split('\n');
+
+    for (let i = 0; i < lines.length - 1; i++) {
+        // Check if next line contains only dashes or colons (separator line)
+        if (/^ *:?-{3,}:? *( *\| *:?-{3,}:? *)*$/.test(lines[i+1].trim())) {
+            // If current line doesn't have pipes, add pipes around it
+            if (!lines[i].trim().startsWith('|')) {
+                lines[i] = '| ' + lines[i].trim().replace(/\s+/g, ' | ') + ' |';
+            }
+            // Ensure separator line also starts and ends with pipes
+            if (!lines[i+1].trim().startsWith('|')) {
+                const cols = lines[i].split('|').length - 2; // exclude ends
+                lines[i+1] = '|' + ' --- |'.repeat(cols);
+            }
+        }
+    }
+    // Rejoin lines and return
+    return lines.join('\n');
 }
 
 function AnalysisResults({ result }) {
