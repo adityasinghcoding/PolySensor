@@ -1,6 +1,7 @@
 .app {
    min-height: 100vh;
-   background: linear-gradient(135deg, #667eea 30%, #764ba2 100%);
+   /* background: linear-gradient(135deg, #667eea 30%, #764ba2 100%); */
+   background-color: white;
 }
 
 .app-header {
@@ -10,7 +11,7 @@
    display: flex;
    align-items: center;
    justify-content: center;
-   color: white;
+   color: rgb(0, 0, 0);
    position: relative;
 
 }
@@ -28,12 +29,19 @@
    font-family: 'Poppins', sans-serif;
    margin: 0 0 0.5rem 0;
    font-size: 6rem;
-   color: white;
+   color: rgb(0, 0, 0);
    position: relative;
-   text-shadow: 
+   /* text-shadow: 
       0 0 10px rgba(0, 0, 0, 0.3),
       0 0 20px rgba(0, 0, 0, 0.2),
-      0 0 30px rgba(0, 0, 0, 0.1);
+      0 0 30px rgba(0, 0, 0, 0.1); */
+
+      /* text-shadow:
+      0 0 5px #fff,
+      0 0 10px #fff,
+      0 0 20px #fff,
+      0 0 40px #0ff,
+      0 0 80px #0ff; */
 
    }
 
@@ -45,10 +53,11 @@
    left: 50%;
    transform: translateX(-50%);
    margin: 0;
-   text-shadow: 
+   color: #bdbdbd;
+   /* text-shadow: 
       0 0 10px rgba(0, 0, 0, 0.5),
       0 0 20px rgba(0, 0, 0, 0.3),
-      0 0 30px rgba(0, 0, 0, 0.1);
+      0 0 30px rgba(0, 0, 0, 0.1); */
 }
 
 .app-main {

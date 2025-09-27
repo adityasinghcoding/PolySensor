@@ -14,9 +14,37 @@
 }
 
 .result-content {
-   white-space: pre-wrap;
+   /* white-space: pre-wrap; */
    line-height: 1.6;
    color: #555;
    max-height: 400px;
    overflow-y: auto;
+}
+
+/* newly added  */
+
+.result-content table {
+   width: 100%;
+   border-collapse: collapse;
+   margin: 1rem 0;
+}
+
+.result-content th,
+.result-content td {
+   border: none;
+   padding: 8px 12px;
+   text-align: left;
+}
+
+.result-content th {
+   background-color: #f2f2f2;
+   font-weight: bold;
+}
+
+.result-content tr:nth-child(even) {
+   background-color: #f9f9f9;
+}
+
+.result-content tr:hover {
+   background-color: #f5f5f5;
 }
