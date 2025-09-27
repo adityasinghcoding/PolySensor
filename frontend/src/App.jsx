@@ -1,18 +1,41 @@
 import React, { useState } from 'react';
 import AnalyzePage from './pages/AnalyzePage';
+import FileUploader from './components/FileUploader/FileUploader';
 import './App.css';
+import { analyzeFile } from './utils/apiService';
 import logo from '../../assets/PolySensor no bg 200px.png';
 
 function App() {
-  const [fileSelected, setFileSelected] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [analysisResult, setAnalysisResult] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  // Pass this handler down to AnalyzePage or handle file input here
-  const handleFileSelection = () => {
-    setFileSelected(true);
+  const handleFileSelect = (file) => {
+    setSelectedFile(file);
+    setAnalysisResult('');
+    setError('');
+  };
+
+  const handleAnalyze = async () => {
+    if (!selectedFile) return;
+
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const result = await analyzeFile(selectedFile);
+      setAnalysisResult(result);
+    } catch (err) {
+      setError('Failed to analyze content. Please try again.');
+      console.error('Analysis error:', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className={`app ${fileSelected ? 'shrink' : ''}`}>
+    <div className={`app ${selectedFile ? 'shrink' : ''}`}>
       <header className='app-header'>
         <img src={logo} className="app-logo" alt="Custom Logo" />
         <h1>PolySensor</h1>
@@ -20,8 +43,25 @@ function App() {
       </header>
 
       <main className='app-main'>
-        <AnalyzePage onFileSelect={handleFileSelection} />
+        <AnalyzePage selectedFile={selectedFile} analysisResult={analysisResult} error={error} isLoading={isLoading} />
       </main>
+
+      <div className="bottom-controls">
+        <FileUploader
+          onFileSelect={handleFileSelect}
+          selectedFile={selectedFile}
+        />
+        {selectedFile && (
+          <button
+            onClick={handleAnalyze}
+            disabled={isLoading}
+            className="analyze-button"
+          >
+            {isLoading && <span className="spinner"></span>}
+            {isLoading ? 'Analyzing...' : 'Analyze File'}
+          </button>
+        )}
+      </div>
     </div>
   );
 }

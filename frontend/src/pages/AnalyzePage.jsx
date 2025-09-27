@@ -1,67 +1,23 @@
-import React, { useState } from "react";
-import FileUploader from "../components/FileUploader/FileUploader";
+import React from "react";
 import AnalysisResults from '../components/AnalysisResults';
-import { analyzeFile } from '../utils/apiService';
+import Loading from '../components/Loading/Loading';
 
-function AnalyzePage() {
-   const [selectedFile, setSelectedFile] = useState(null);
-   const [analysisResult, setAnalysisResult] = useState('');
-   const [isLoading, setIsLoading] = useState(false);
-   const [error, setError] = useState('');
-
-   const handleFileSelect = (file) => {
-      setSelectedFile(file);
-      setAnalysisResult('');
-      setError('');
-   };
-
-   const handleAnalyze = async () => {
-      if (!selectedFile) return;
-
-      setIsLoading(true);
-      setError('');
-
-
-      try {
-         const result = await analyzeFile(selectedFile);
-         setAnalysisResult(result);
-      } catch (err) {
-         setError('Failed to analyze content. Please try again.');
-         console.error('Analysis error:', err);
-      }  finally {
-         setIsLoading(false);
-      }
-   };
-
-
+function AnalyzePage({ selectedFile, analysisResult, error, isLoading }) {
    return (
       <div className="analyze-page">
-         <FileUploader 
-            onFileSelect={handleFileSelect}
-            selectedFile={selectedFile}
-         />
-
-         {selectedFile && (
-            <div className="analyze-controls">
-               <button
-                  onClick={handleAnalyze}
-                  disabled={isLoading}
-                  className="analyze-button"
-               >
-                  {isLoading ? 'Analyzing...' : 'Analyze File'}
-               </button>
+         {error && (
+            <div className="error-message">
+               {error}
             </div>
-      )}
+         )}
 
-      {error && (
-         <div className="error-message">
-            {error}
-         </div>
-      )}
+         {isLoading && (
+            <Loading />
+         )}
 
-      {analysisResult && (
-         <AnalysisResults result={analysisResult} />
-      )}
+         {analysisResult && (
+            <AnalysisResults result={analysisResult} />
+         )}
       </div>
    );
 }

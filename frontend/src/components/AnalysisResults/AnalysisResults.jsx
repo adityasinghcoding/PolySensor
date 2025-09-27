@@ -14,24 +14,28 @@ function preprocessMarkdown(markdown) {
 }
 
 function fixMarkdownTables(markdown) {
-   // First preprocess HTML tags
-   let processedMarkdown = preprocessMarkdown(markdown);
-   
-   // Rest of your existing table fixing logic...
-   const lines = processedMarkdown.split('\n');
+    // First, replace <br> tags with proper markdown line breaks
+    let processedMarkdown = markdown.replace(/<br\s*\/?>\s*/gi, '  \n');
+    
+    // Split input into lines
+    const lines = processedMarkdown.split('\n');
 
-   for (let i = 0; i < lines.length - 1; i++) {
-      if (/^ *:?-{3,}:? *( *\| *:?-{3,}:? *)*$/.test(lines[i+1].trim())) {
-         if (!lines[i].trim().startsWith('|')) {
-               lines[i] = '| ' + lines[i].trim().replace(/\s+/g, ' | ') + ' |';
-         }
-         if (!lines[i+1].trim().startsWith('|')) {
-               const cols = lines[i].split('|').length - 2;
-               lines[i+1] = '|' + ' --- |'.repeat(cols);
-         }
-      }
-   }
-   return lines.join('\n');
+    for (let i = 0; i < lines.length - 1; i++) {
+        // Check if next line contains only dashes or colons (separator line)
+        if (/^ *:?-{3,}:? *( *\| *:?-{3,}:? *)*$/.test(lines[i+1].trim())) {
+            // If current line doesn't have pipes, add pipes around it
+            if (!lines[i].trim().startsWith('|')) {
+                lines[i] = '| ' + lines[i].trim().replace(/\s+/g, ' | ') + ' |';
+            }
+            // Ensure separator line also starts and ends with pipes
+            if (!lines[i+1].trim().startsWith('|')) {
+                const cols = lines[i].split('|').length - 2; // exclude ends
+                lines[i+1] = '|' + ' --- |'.repeat(cols);
+            }
+        }
+    }
+    // Rejoin lines and return
+    return lines.join('\n');
 }
 
 function AnalysisResults({ result }) {
