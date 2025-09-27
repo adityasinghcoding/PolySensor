@@ -1,0 +1,22 @@
+.analysis-results {
+   background: white;
+   border-radius: 10px;
+   padding: 2rem;
+   margin-top: 2rem;
+   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.analysis-results h2 {
+   margin-top: 0;
+   color: #333;
+   border-bottom: 2px solid #667eea;
+   padding-bottom: 0.5rem;
+}
+
+.result-content {
+   white-space: pre-wrap;
+   line-height: 1.6;
+   color: #555;
+   max-height: 400px;
+   overflow-y: auto;
+}

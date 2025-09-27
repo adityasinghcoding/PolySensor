@@ -9,14 +9,15 @@ import getpass
 from prompts import DOCUMENT_PROMPT, AUDIO_PROMPT, VIDEO_PROMPT, IMAGE_PROMPT
 from data_handling import (
    unstructured_doc_extraction,
-   # audio_text,
-   # video_audio_text,
    audio,
    image,
    video
    )
 from io import BytesIO
-import mimetypes
+# import mimetypes
+from flask import Flask, request, jsonify, send_from_directory
+from flask_cors import CORS
+
 
 load_dotenv(find_dotenv()) # loading the environment variables from .env
 
@@ -40,107 +41,139 @@ document_chain = LLMChain(llm=llm, prompt = document_prompt)
 # audio_chain = LLMChain(llm=llm, prompt = audio_prompt)
 # video_chain = LLMChain(llm=llm, prompt = video_prompt)
 
+app = Flask(__name__)
+CORS(app)  # this allows react app to communicate with this backend
+
+@app.route('/analyze', methods=['POST'])
+def analyze_file():
+   try:
+      if 'file' not in request.files:
+         return jsonify({'error': 'No file provided'}), 400
+      
+      file = request.files['files']
+      if file.filename == '':
+         return jsonify({'error': 'No file selected'}), 400
+      
+      # saving file temporarily
+      file_path = os.path.join('temp', file.filename)
+      os.makedirs('temp', exist_ok=True)
+      file.save(file_path)
 
 
-if __name__ == "__main__":
-   file_path = input("Give path of the file:\n")
-   file_path = file_path.replace('"', '').strip()
 
-   doc_extensions = (
-   '.cwk', '.mcw', '.csv', '.dif', '.dbf', '.eml', '.msg', '.p7s', '.epub',
-   '.htm', '.html', '.bmp', '.heic', '.prn', '.tiff',
-   '.md', '.odt', '.org', '.eth', '.pbd', '.sdp', '.pdf', '.txt', '.pot',
-   '.ppt', '.pptm', '.pptx', '.rst', '.rtf', '.et', '.fods', '.mw', '.xls',
-   '.xlsx', '.sxg', '.tsv', '.abw', '.doc', '.docm', '.docx', '.dot', '.dotm',
-   '.hwp', '.zabw', '.xml'
-   )
+      # main code
+      file_path = input("Give path of the file:\n")
+      file_path = file_path.replace('"', '').strip()
 
-   image_extensions = ('.jpg', '.png', '.jpeg', '.webp', '.heif')
-   audio_extensions = ('.mp3', '.wav', '.aiff', '.aac', '.ogg', '.flac')
-   video_extensions = ('.mp4', '.mpeg', '.mov', '.avi', '.x-flav', '.mpg', '.webm', '.wmv', '.3gpp')
+      doc_extensions = (
+      '.cwk', '.mcw', '.csv', '.dif', '.dbf', '.eml', '.msg', '.p7s', '.epub',
+      '.htm', '.html', '.bmp', '.heic', '.prn', '.tiff',
+      '.md', '.odt', '.org', '.eth', '.pbd', '.sdp', '.pdf', '.txt', '.pot',
+      '.ppt', '.pptm', '.pptx', '.rst', '.rtf', '.et', '.fods', '.mw', '.xls',
+      '.xlsx', '.sxg', '.tsv', '.abw', '.doc', '.docm', '.docx', '.dot', '.dotm',
+      '.hwp', '.zabw', '.xml'
+      )
 
-   # video_text_data = None
-   # video_audio_data = None
-   doc_json_data = None
+      image_extensions = ('.jpg', '.png', '.jpeg', '.webp', '.heif')
+      audio_extensions = ('.mp3', '.wav', '.aiff', '.aac', '.ogg', '.flac')
+      video_extensions = ('.mp4', '.mpeg', '.mov', '.avi', '.x-flav', '.mpg', '.webm', '.wmv', '.3gpp')
 
-   if file_path.lower().endswith(doc_extensions):
-      doc_json_data = unstructured_doc_extraction(file_path)
-      if doc_json_data:
-         # plugging in the values(function outputs) to prompts to feed into llm 
-         final_doc_prompt = DOCUMENT_PROMPT.format(doc_json_data = doc_json_data)
+      # video_text_data = None
+      # video_audio_data = None
+      doc_json_data = None
+
+      if file_path.lower().endswith(doc_extensions):
+         doc_json_data = unstructured_doc_extraction(file_path)
+         if doc_json_data:
+            # plugging in the values(function outputs) to prompts to feed into llm 
+            final_doc_prompt = DOCUMENT_PROMPT.format(doc_json_data = doc_json_data)
+            
+            # running; feeding the output of functions with prompts to llm to get output
+            llm_doc_output = document_chain.run(doc_json_data=final_doc_prompt)
+            print(llm_doc_output)
+
+
+      if file_path.lower().endswith(image_extensions):
+         image_path = image(file_path)
+         if image_path:
+            # Reading image bytes
+            with open(image_path, "rb") as img:
+               image_bytes = img.read()
+               prompt_with_image = HumanMessage(
+                  content= [
+                     {
+                        'type': 'text',
+                        'text': IMAGE_PROMPT
+                        },
+                     {
+                        'type': 'image_url', 
+                        'image_url': f"data:image/png;base64, {base64.b64encode(image_bytes).decode('utf-8')}"
+                     }
+                  ]
+               )
+               # Feeding the audio with prompt using json format of langchain
+               final_image_prompt = llm.invoke([prompt_with_image])
+               print(final_image_prompt.content)
          
-         # running; feeding the output of functions with prompts to llm to get output
-         llm_doc_output = document_chain.run(doc_json_data=final_doc_prompt)
-         print(llm_doc_output)
+      if file_path.lower().endswith(audio_extensions):
+         audio_path = audio(file_path)
+         if audio_path:
+            buffer = BytesIO()
+            
+            # Exporting Audio to desired format in memory without saving to disk 
+            audio_path.export(buffer, format='mp3') # mp3 or wav
+            audio_bytes = buffer.getvalue()
 
-
-   if file_path.lower().endswith(image_extensions):
-      image_path = image(file_path)
-      if image_path:
-         # Reading image bytes
-         with open(image_path, "rb") as img:
-            image_bytes = img.read()
-            prompt_with_image = HumanMessage(
-               content= [
-                  {
-                     'type': 'text',
-                     'text': IMAGE_PROMPT
-                     },
-                  {
-                     'type': 'image_url', 
-                     'image_url': f"data:image/png;base64, {base64.b64encode(image_bytes).decode('utf-8')}"
-                  }
+            prompt_with_audio = HumanMessage([
+            {
+               'type': 'text',
+               'text': AUDIO_PROMPT
+            },
+            {
+               'type': 'media', 
+               'mime_type': 'audio/mp3', 
+               'data': base64.b64encode(audio_bytes).decode('utf-8')
+            }
                ]
             )
             # Feeding the audio with prompt using json format of langchain
-            final_image_prompt = llm.invoke([prompt_with_image])
-            print(final_image_prompt.content)
-      
-   if file_path.lower().endswith(audio_extensions):
-      audio_path = audio(file_path)
-      if audio_path:
-         buffer = BytesIO()
-         
-         # Exporting Audio to desired format in memory without saving to disk 
-         audio_path.export(buffer, format='mp3') # mp3 or wav
-         audio_bytes = buffer.getvalue()
-
-         prompt_with_audio = HumanMessage([
-         {
-            'type': 'text',
-            'text': AUDIO_PROMPT
-         },
-         {
-            'type': 'media', 
-            'mime_type': 'audio/mp3', 
-            'data': base64.b64encode(audio_bytes).decode('utf-8')
-         }
-            ]
-         )
-         # Feeding the audio with prompt using json format of langchain
-         final_audio_prompt = llm.invoke([prompt_with_audio])
-         print(final_audio_prompt.content)
+            final_audio_prompt = llm.invoke([prompt_with_audio])
+            print(final_audio_prompt.content)
 
 
-   if file_path.lower().endswith(video_extensions):
-      video_path = video(file_path)
-      if video_path:
-         with open(video_path, "rb") as vid:
-            video_bytes = vid.read()
-            prompt_with_video = HumanMessage([
-            {
-               'type': 'text',
-               'text': VIDEO_PROMPT
-            },
-            {
-               'type': 'video_url', 
-               'video_url': f'data:video/mp4;base64, {base64.b64encode(video_bytes).decode('utf-8')}'
-            }
-               ]
-            )        
-            # Feeding the audio with prompt using json format of langchain
-            final_video_prompt = llm.invoke([prompt_with_video])
-            print(final_video_prompt.content)
+      if file_path.lower().endswith(video_extensions):
+         video_path = video(file_path)
+         if video_path:
+            with open(video_path, "rb") as vid:
+               video_bytes = vid.read()
+               prompt_with_video = HumanMessage([
+               {
+                  'type': 'text',
+                  'text': VIDEO_PROMPT
+               },
+               {
+                  'type': 'video_url', 
+                  'video_url': f'data:video/mp4;base64, {base64.b64encode(video_bytes).decode('utf-8')}'
+               }
+                  ]
+               )        
+               # Feeding the audio with prompt using json format of langchain
+               final_video_prompt = llm.invoke([prompt_with_video])
+               print(final_video_prompt.content)
+
+
+
+               # -----------------
+               result = f"Digestion has complete for {file.filename}"
+
+               # cleaning memory
+               os.remove(file_path)
+               return jsonify({'result': result})
+   except Exception as e:
+      return jsonify({'error': str(e)}), 500         
+
+if __name__ == "__main__":
+   app.run(debug=True, port=5000)
 
    # if file_path.lower().endswith(('.mp4', '.mkv')):
    # video_text_data, video_audio_data = video_audio_text(file_path, interval_sec = 3)

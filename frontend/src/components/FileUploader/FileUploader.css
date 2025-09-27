@@ -1,0 +1,56 @@
+.file-uploader {
+   border: 2px dashed #ccc;
+   border-radius: 10px;
+   padding: 2rem;
+   text-align: center;
+   cursor: pointer;
+   transition: white;
+   background: white;
+}
+
+.file-uploader:hover {
+   border-color: #667eea;
+   background: #f8f9fa;
+}
+
+.file-input {
+   display: none;
+}
+
+.upload-area {
+   min-height: 150px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.upload-prompt p {
+   margin: 0;
+   color: #666;
+   font-size: 0.9rem;
+}
+
+.file-info {
+   display: flex;
+   align-items: center;
+   gap: 1rem;
+}
+
+.file-icon {
+   font-size: 2rem;
+}
+
+.file-details {
+   font-weight: left;
+}
+
+.file-name {
+   font-weight: bold;
+   color: #333;
+}
+
+.file-size {
+   color: #666;
+   font-size: 0.9rem;
+}
+

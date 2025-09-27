@@ -14,6 +14,7 @@ pymilvus
 getpass
 base64
 fastapi uvicorn
+flask
 
 
 # Python version 3.11 is recommended as of now this is the version which is supported by the 'unstructured'
