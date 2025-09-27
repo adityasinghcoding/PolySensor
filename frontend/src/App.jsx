@@ -46,7 +46,7 @@ function App() {
         <AnalyzePage selectedFile={selectedFile} analysisResult={analysisResult} error={error} isLoading={isLoading} />
       </main>
 
-      <div className="bottom-controls">
+      <div className={`bottom-controls ${analysisResult ? 'results-view' : ''}`}>
         <FileUploader
           onFileSelect={handleFileSelect}
           selectedFile={selectedFile}

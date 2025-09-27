@@ -28,3 +28,6 @@ PolySensor/
 
 # Environment variables
 .env
+
+# Temporary files
+temp/

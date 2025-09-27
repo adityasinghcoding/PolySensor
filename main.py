@@ -127,14 +127,16 @@ def analyze_file():
          if video_path:
                with open(video_path, "rb") as vid:
                   video_bytes = vid.read()
+                  mime_type = 'video/mp4' if file_path.lower().endswith('.mp4') else 'video/mpeg'  # adjust as needed
                   prompt_with_video = HumanMessage([
                      {
                            'type': 'text',
                            'text': VIDEO_PROMPT
                      },
                      {
-                           'type': 'video_url',
-                           'video_url': f'data:video/mp4;base64,{base64.b64encode(video_bytes).decode('utf-8')}'
+                           'type': 'media',
+                           'mime_type': mime_type,
+                           'data': base64.b64encode(video_bytes).decode('utf-8')
                      }
                   ])
                   final_video_prompt = llm.invoke([prompt_with_video])
