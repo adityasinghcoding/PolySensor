@@ -1,5 +1,5 @@
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv, set_key
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
@@ -16,16 +16,17 @@ from data_handling import (
    video
    )
 from io import BytesIO
+import mimetypes
 
-
-
-load_dotenv() # loading the environment variables from .env
+load_dotenv(find_dotenv()) # loading the environment variables from .env
 
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-
 if not GOOGLE_API_KEY:
    GOOGLE_API_KEY = getpass.getpass("Enter API Key:")
-   os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY
+   if GOOGLE_API_KEY:
+      dotenv_path = find_dotenv()
+      set_key(dotenv_path, 'GOOGLE_API_KEY', GOOGLE_API_KEY)
+      os.environ["GOOGLE_API_KEY"] = GOOGLE_API_KEY
 
 llm = ChatGoogleGenerativeAI(model='gemini-2.5-pro', google_api_key = GOOGLE_API_KEY)
 

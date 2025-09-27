@@ -24,3 +24,4 @@ node_modules
 *_frames/
 .venv/
 DOCS/
+PolySensor/
