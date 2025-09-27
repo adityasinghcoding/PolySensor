@@ -1,23 +1,58 @@
 .app {
    min-height: 100vh;
-   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+   background: linear-gradient(135deg, #667eea 30%, #764ba2 100%);
 }
 
 .app-header {
-   background: rgb(255, 255, 255, 0.1);
-   backdrop-filter: blur(10px);
+   /* background: rgba(255, 255, 255, 0.1); */
+   backdrop-filter: blur(50px);
    padding: 2rem;
-   text-align: center;
+   display: flex;
+   align-items: center;
+   justify-content: center;
    color: white;
+   position: relative;
+
+}
+
+.app-logo {
+   
+   height: 120px; /* Adjust the height as needed */
+   width: auto; /* Add some space between the logo and the h1 */
+   margin-right: 10px;
+   margin-bottom: 10px;
+   
 }
 
 .app-header h1 {
+   font-family: 'Poppins', sans-serif;
    margin: 0 0 0.5rem 0;
-   font-size: 2.5rem;
+   font-size: 6rem;
+   color: white;
+   position: relative;
+   text-shadow: 
+      0 0 10px rgba(0, 0, 0, 0.3),
+      0 0 20px rgba(0, 0, 0, 0.2),
+      0 0 30px rgba(0, 0, 0, 0.1);
+
+   }
+
+.app-header p {
+   font-family: 'Poppins', sans-serif;
+   font-style: italic;
+   position: absolute;
+   top: 86%;
+   left: 50%;
+   transform: translateX(-50%);
+   margin: 0;
+   text-shadow: 
+      0 0 10px rgba(0, 0, 0, 0.5),
+      0 0 20px rgba(0, 0, 0, 0.3),
+      0 0 30px rgba(0, 0, 0, 0.1);
 }
 
 .app-main {
-   padding: 2rem;
+   padding: 6rem;
    max-width: 1200px;
    margin: 0 auto;
 }

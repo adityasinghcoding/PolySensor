@@ -6,28 +6,35 @@
    cursor: pointer;
    transition: white;
    background: white;
+   border-radius: 60px;
+   
 }
 
 .file-uploader:hover {
    border-color: #667eea;
    background: #f8f9fa;
+   
 }
 
 .file-input {
    display: none;
+   
 }
 
-.upload-area {
-   min-height: 150px;
-   display: flex;
-   align-items: center;
-   justify-content: center;
+.upload-area { /* the element was .upload-area */
+  border-radius: 20px;
+  /* border-top-left-radius: 50px;
+  border-top-right-radius: 50px; */
+  background-color: rgb(240, 240, 240);
+  border: 2px dashed rgb(204, 204, 204);
+  
 }
 
 .upload-prompt p {
    margin: 0;
    color: #666;
    font-size: 0.9rem;
+   
 }
 
 .file-info {
