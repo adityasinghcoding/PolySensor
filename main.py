@@ -60,6 +60,7 @@ CORS(app)  # this allows react app to communicate with this backend
 
 @app.route('/analyze0', methods=['POST'])
 def analyze_file():
+   file_path = None
    try:
       if 'file' not in request.files:
          return jsonify({'error': 'No file provided'}), 400
@@ -88,6 +89,8 @@ def analyze_file():
          image_result = image(file_path)
          if not os.path.exists(image_result):
             os.remove(file_path)
+            
+         if isinstance(image_result, str):
             return jsonify({'error': image_result}), 400
          image_path = image_result
          if image_path:
@@ -137,6 +140,8 @@ def analyze_file():
          video_result = video(file_path)
          if not os.path.exists(video_result):
             os.remove(file_path)
+
+         if isinstance(video_result, str):
             return jsonify({'error': video_result}), 400
          video_path = video_result
          if video_path:
@@ -167,6 +172,13 @@ def analyze_file():
 
    except Exception as e:
       return jsonify({'error': str(e)}), 500
+   finally:
+      # Cleanup temp file and folder if possible
+      if file_path and os.path.exists(file_path):
+         os.remove(file_path)
+      temp_dir = 'temp'
+      if os.path.exists(temp_dir) and not os.listdir(temp_dir):
+         os.rmdir(temp_dir)
 
 if __name__ == "__main__":
    app.run(debug=True, port=5000)

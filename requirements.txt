@@ -16,10 +16,10 @@ uvicorn
 flask
 jspdf 
 
-npm isnthtml2canvas
-
-# npm install remark-gfm
 # npm install ReactMarkdown
+# npm install marked dompurify
+# npm install html2canvas
+# npm install markdown-to-jsx
 
 # Python version 3.11 is recommended as of now this is the version which is supported by the 'unstructured'
 # Note: You need to manually install Tesseract OCR and FFmpeg for full functionality
