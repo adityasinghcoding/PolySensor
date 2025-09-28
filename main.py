@@ -181,7 +181,8 @@ def analyze_file():
          os.rmdir(temp_dir)
 
 if __name__ == "__main__":
-   app.run(debug=True, port=5000)
+   port = int(os.environ.get('PORT', 5000))
+   app.run(host='0.0.0.0', port=port, debug=False)
 
    # if file_path.lower().endswith(('.mp4', '.mkv')):
    # video_text_data, video_audio_data = video_audio_text(file_path, interval_sec = 3)
