@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: polysensor-backend
+    runtime: python3
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    envVars:
+      - key: GOOGLE_API_KEY
+        sync: false  # Set manually in Render dashboard
+      - key: FLASK_ENV
+        value: production
+    plan: free
