@@ -10,7 +10,7 @@
 
 <br>
 
-A sophisticated Python application that leverages advanced AI to analyze and extract insights from virtually any type of media content. Built with cutting-edge technologies including LangChain and Google's Gemini model, PolySensor transforms unstructured data into actionable intelligence.
+A full-stack web application that leverages advanced AI to analyze and extract insights from virtually any type of media content. Built with cutting-edge technologies including React, Flask, LangChain, and Google's Gemini model, PolySensor transforms unstructured data into actionable intelligence through an intuitive web interface.
 
 ## 🌟 What Makes PolySensor Unique?
 
@@ -35,47 +35,55 @@ From research papers to multimedia presentations, PolySensor delivers deep analy
 
 ```mermaid
 graph TB
-    subgraph "📥 Input Layer"
-        A[📁 User File Input] --> B[🔄 File Type Router]
+    subgraph "🌐 Frontend Layer"
+        U[👤 User] --> FE[⚛️ React Frontend<br/>File Upload Interface]
+        FE --> API[📡 API Request<br/>File + Metadata]
     end
-    
-    subgraph "🔧 Extraction Layer"
-        B --> C[📄 Document Processor]
-        B --> D[🖼️ Image Processor]
-        B --> E[🎵 Audio Processor]
-        B --> F[🎬 Video Processor]
-        
-        C --> C1[Unstructured<br/>Partition]
-        D --> D1[PyTesseract<br/>OCR]
-        E --> E1[SpeechRecognition<br/>Library]
-        F --> F1[Frame Extraction<br/>+ Audio Separation]
+
+    subgraph "🔧 Backend Processing Layer"
+        API --> B[🔄 File Type Router<br/>Flask API]
+
+        subgraph "📥 Input Processing"
+            B --> C[📄 Document Processor]
+            B --> D[🖼️ Image Processor]
+            B --> E[🎵 Audio Processor]
+            B --> F[🎬 Video Processor]
+
+            C --> C1[Unstructured<br/>Partition]
+            D --> D1[PyTesseract<br/>OCR]
+            E --> E1[SpeechRecognition<br/>Library]
+            F --> F1[Frame Extraction<br/>+ Audio Separation]
+        end
+
+        subgraph "🤖 AI Analysis"
+            C1 --> G[🔄 Content Aggregator]
+            D1 --> G
+            E1 --> G
+            F1 --> G
+
+            G --> H[💬 Prompt Engine<br/>LangChain Templates]
+            H --> I[🧠 LLM Gateway<br/>Google Gemini API]
+        end
     end
-    
-    subgraph "🤖 AI Processing Layer"
-        C1 --> G[🔄 Content Aggregator]
-        D1 --> G
-        E1 --> G
-        F1 --> G
-        
-        G --> H[💬 Prompt Engine<br/>LangChain Templates]
-        H --> I[🧠 LLM Gateway<br/>Google Gemini API]
+
+    subgraph "📤 Response Layer"
+        I --> J[📈 Analysis Results<br/>JSON Response]
+        J --> FE2[⚛️ Frontend Display<br/>Markdown Rendering]
+        FE2 --> U2[👤 User Views<br/>Analysis & Export]
     end
-    
-    subgraph "📊 Output Layer"
-        I --> J[📈 Analysis Results]
-        J --> K[💡 Formatted Output<br/>Summaries & Insights]
-    end
-    
+
     %% Styling with better contrast
-    classDef input fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000000
-    classDef extraction fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px,color:#000000
-    classDef ai fill:#fff3e0,stroke:#ef6c00,stroke-width:2px,color:#000000
-    classDef output fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000000
-    
-    class A,B input
-    class C,D,E,F,C1,D1,E1,F1 extraction
-    class G,H,I ai
-    class J,K output
+    classDef frontend fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000000
+    classDef backend fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px,color:#000000
+    classDef input fill:#fff3e0,stroke:#ef6c00,stroke-width:2px,color:#000000
+    classDef ai fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000000
+    classDef response fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000000
+
+    class U,FE,API,FE2,U2 frontend
+    class B,C,D,E,F,C1,D1,E1,F1 backend
+    class G,H input
+    class I ai
+    class J response
 ```
 
 ---
@@ -225,6 +233,7 @@ graph TB
 ### Prerequisites
 
 - Python 3.11 _(Recommended for Unstructured)_ or can use higher version 3.11+
+- Node.js 16+ and npm
 - Google Gemini API key
 - Tesseract OCR (for image/text extraction)
 
@@ -233,53 +242,99 @@ graph TB
 1. **Clone the repository**
 ```bash
 git clone https://github.com/adityasinghcoding/PolySensor.git
-cd multi-modal-analyzer
+cd PolySensor
 ```
 
-2. **Install Dependencies**
+2. **Backend Setup**
 ```bash
+# Install Python dependencies
 pip install -r requirements.txt
-```
 
-3. **Install Tesseract OCR**
-  - Windows: Download from [GitHub releases](https://github.com/UB-Mannheim/tesseract/wiki)
-  - Mac: ```brew install tesseract```
-  - Linux: ```sudo apt-get install tesseract-ocr```
+# Install Tesseract OCR
+# Windows: Download from https://github.com/UB-Mannheim/tesseract/wiki
+# Mac: brew install tesseract
+# Linux: sudo apt-get install tesseract-ocr
 
-4. **Set up environment variables**
-```
+# Set up environment variables
 cp .env.example .env
 # Edit .env and add your Google API key
 GOOGLE_API_KEY=your_api_key_here
 ```
 
-### Usage
-Run the application:
+3. **Frontend Setup**
+```bash
+# Navigate to frontend directory
+cd frontend
+
+# Install Node.js dependencies
+npm install
+
+# Return to root directory
+cd ..
 ```
+
+### Usage
+
+1. **Start the Backend Server**
+```bash
 python main.py
 ```
-When prompted, enter the path to your file:
+The Flask server will start on `http://localhost:5000`
+
+2. **Start the Frontend (in a new terminal)**
+```bash
+cd frontend
+npm run dev
 ```
-Give path of the file without '':
-"C:/path/to/your/file.extension"
-```
-The system will automatically detect the file type and provide an AI-generated analysis.
+The React app will be available at `http://localhost:5173`
+
+3. **Access the Application**
+Open your browser and navigate to `http://localhost:5173` to use the web interface. Upload files through the drag-and-drop interface and receive AI-powered analysis results.
 
 ## 🏗️ Project Structure
 
 ```
-multi-modal-analyzer/
-├── main.py                # Main application entry point
-├── prompts.py             # AI prompt templates
-├── text_extractor.py      # Content extraction utilities
-├── requirements.txt       # Python dependencies
-├── .env                   # Environment variables
-└── README.md              # This file
+PolySensor/
+├── main.py                    # Flask backend entry point
+├── data_handling.py           # Content extraction and validation utilities
+├── prompts.py                 # AI prompt templates for different content types
+├── requirements.txt           # Python dependencies
+├── .env                       # Environment variables (API keys)
+├── frontend/                  # React frontend application
+│   ├── public/
+│   │   ├── index.html         # Main HTML template
+│   │   └── favicon.ico
+│   ├── src/
+│   │   ├── components/        # Reusable React components
+│   │   │   ├── AnalysisResults/  # Displays analysis output with markdown support
+│   │   │   ├── FileUploader/     # Drag-and-drop file upload interface
+│   │   │   └── Loading/          # Loading spinner component
+│   │   ├── pages/
+│   │   │   └── AnalyzePage.jsx   # Main analysis page
+│   │   ├── utils/
+│   │   │   └── apiService.js     # API communication utilities
+│   │   ├── App.jsx               # Main React application component
+│   │   ├── App.css               # Global styles
+│   │   ├── main.jsx              # React application entry point
+│   │   └── index.css             # Base styles
+│   ├── package.json           # Node.js dependencies and scripts
+│   └── vite.config.js         # Vite build configuration
+└── README.md                  # This file
 ```
+
 ### Core Modules
-`main.py`: Orchestrates the analysis pipeline, handles file type detection, and manages LLM chains
-`prompts.py`: Contains optimized prompts for different content types
-`text_extractor.py`: Handles actual content extraction from various file formats
+
+**Backend:**
+- `main.py`: Flask API server with CORS support, handles file uploads and AI processing
+- `data_handling.py`: Content extraction functions for documents, images, audio, and video
+- `prompts.py`: Specialized prompts for different media types optimized for Gemini AI
+
+**Frontend:**
+- `App.jsx`: Main application router and state management
+- `AnalyzePage.jsx`: Core analysis interface with file upload and results display
+- `FileUploader.jsx`: Drag-and-drop file upload component with validation
+- `AnalysisResults.jsx`: Markdown rendering component with PDF export functionality
+- `apiService.js`: Axios-based API client for backend communication
 
 ## 🔧 Configuration
 ### API Keys
@@ -405,6 +460,9 @@ This project stands on the shoulders of these amazing open-source technologies:
 
 | Technology | Purpose | Credit |
 |------------|---------|--------|
+| **React** | Frontend Framework | [Meta](https://reactjs.org/) |
+| **Vite** | Build Tool & Dev Server | [Vite](https://vitejs.dev/) |
+| **Flask** | Backend Web Framework | [Pallets](https://flask.palletsprojects.com/) |
 | **Google Gemini** | AI Language Model | [Google AI](https://deepmind.google/technologies/gemini/) |
 | **LangChain** | LLM Orchestration | [LangChain AI](https://github.com/langchain-ai/langchain) |
 | **Unstructured** | Document Processing | [Unstructured IO](https://github.com/Unstructured-IO/unstructured) |
@@ -413,6 +471,10 @@ This project stands on the shoulders of these amazing open-source technologies:
 | **MoviePy** | Video Processing | [Zulko](https://github.com/Zulko/moviepy) |
 | **Pydub** | Audio Conversion | [Jiaaro](https://github.com/jiaaro/pydub) |
 | **Pillow** | Image Processing | [Python Pillow](https://github.com/python-pillow/Pillow) |
+| **Axios** | HTTP Client | [Axios](https://axios-http.com/) |
+| **html2canvas** | HTML to Canvas | [Niklas von Hertzen](https://html2canvas.hertzen.com/) |
+| **jsPDF** | PDF Generation | [Parallax](https://github.com/parallax/jsPDF) |
+| **markdown-to-jsx** | Markdown Rendering | [ProbablyUp](https://github.com/probablyup/markdown-to-jsx) |
 
 ### 🙏 Special Thanks
 - **Open Source Community** for invaluable tools and libraries
