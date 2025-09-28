@@ -31,13 +31,30 @@ function fixMarkdownTables(markdown) {
             let headerFound = false;
             let separatorFound = false;
             let numCols = 0;
+            let titleLine = null;
 
             // Collect potential table lines
             while (i < lines.length && (lines[i].trim().includes('|') || lines[i].trim() === '' || !headerFound || !separatorFound)) {
-                tableLines.push(lines[i]);
                 let currentLine = lines[i].trim();
+                tableLines.push(lines[i]);
+
                 if (currentLine.includes('|') && currentLine.split('|').length > 2) {
                     if (!headerFound) {
+                        // Check if this looks like a title row with markdown header inside pipes
+                        if (currentLine.includes('#')) {
+                            // Extract the title content
+                            const titleMatch = currentLine.match(/\|(.*?)\|/);
+                            if (titleMatch) {
+                                const titleContent = titleMatch[1].trim();
+                                // Determine header level from # count
+                                const headerLevel = (titleContent.match(/#/g) || []).length;
+                                titleLine = `${'#'.repeat(Math.min(headerLevel, 6))} ${titleContent.replace(/^\#+/, '').trim()}`;
+                                // Remove this line from tableLines as it's the title
+                                tableLines.pop();
+                                i++; // Skip to next
+                                continue;
+                            }
+                        }
                         headerFound = true;
                         // Extract columns from header
                         const parts = currentLine.split('|').map(p => p.trim()).filter(p => p !== '');
@@ -49,7 +66,14 @@ function fixMarkdownTables(markdown) {
                 i++;
             }
 
-            if (numCols > 0 && tableLines.length > 1) {
+            if (titleLine) {
+                // Insert title before the table
+                const startIndex = i - tableLines.length;
+                lines.splice(startIndex, 0, titleLine);
+                i = startIndex + 1;
+            }
+
+            if (numCols > 0 && tableLines.length > 0) {
                 // Fix header: Ensure it starts and ends with |
                 let header = tableLines[0].trim();
                 if (!header.startsWith('|')) header = '|' + header;
