@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useRef } from "react";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import './AnalysisResults.css'
 
 function preprocessMarkdown(markdown) {
@@ -136,12 +138,57 @@ function fixMarkdownTables(markdown) {
 
 function AnalysisResults({ result }) {
    const fixedResult = fixMarkdownTables(result);
+   const contentRef = useRef(null);
+
+   const exportPDF = async () => {
+      if (!contentRef.current) return;
+
+      try {
+         const canvas = await html2canvas(contentRef.current, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: '#ffffff',
+         });
+
+         const imgData = canvas.toDataURL('image/png');
+         const pdf = new jsPDF('p', 'mm', 'a4');
+         const imgWidth = 210;
+         const pageHeight = 295;
+         const imgHeight = (canvas.height * imgWidth) / canvas.width;
+         let heightLeft = imgHeight;
+
+         let position = 0;
+
+         pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+         heightLeft -= pageHeight;
+
+         while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+         }
+
+         pdf.save('analysis-results.pdf');
+      } catch (err) {
+         console.error('PDF export failed:', err);
+      }
+   };
+
    return (
       <div className='analysis-results'>
          <h2>Analysis Results</h2>
-         <div className='result-content'>
+         <div className='result-content' ref={contentRef}>
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{fixedResult}</ReactMarkdown>
          </div>
+         <button 
+            onClick={exportPDF} 
+            className='export-button'
+            title="Export to PDF"
+         >
+            📄
+         </button>
       </div>
    );
 }
