@@ -30,3 +30,6 @@ PolySensor/
 
 # Temporary files
 temp/
+
+# Frontend build output
+frontend/dist/
