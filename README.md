@@ -90,14 +90,22 @@ graph TB
 
 ## 🌟 Features
 
-- **Multi-Modal Support**: Process documents, images, audio, and video files
-- **AI-Powered Analysis**: Uses Google Gemini 2.5 Pro for intelligent content summarization
-- **Smart Text Extraction**: 
-  - Documents: PDF, DOCX, TXT, and 40+ other formats
-  - Images: OCR text extraction using Tesseract
-  - Audio: Speech-to-text transcription
-  - Videos: Frame-by-frame OCR + audio transcription
-- **Modular Architecture**: Easy to extend with new file types and analysis methods
+### Frontend Features
+- **Intuitive Drag-and-Drop Interface**: Seamless file upload with real-time validation and preview
+- **Responsive Design**: Modern React-based UI that works across devices and screen sizes
+- **Real-Time Processing Feedback**: Loading indicators and error handling for smooth user experience
+- **Rich Markdown Rendering**: Beautiful display of AI analysis results using markdown-to-jsx
+- **One-Click PDF Export**: Export analysis results to PDF using html2canvas and jsPDF for easy sharing
+
+### Backend Features
+- **Flask API Server**: Single RESTful endpoint (/analyze0) for file uploads with CORS enabled for frontend communication
+- **File Type Detection**: Extension-based routing for documents, images, audio, and video files
+- **Document Processing**: Uses Unstructured library to extract and convert content from 40+ document formats into JSON for AI analysis
+- **Media Validation**: Length limits (1 minute for audio, 30 seconds for video) with premium upgrade messaging for longer content
+- **AI Integration**: Google Gemini 2.5 Pro model with LangChain orchestration using specialized prompts for each media type
+- **Temporary Storage**: Secure file handling with automatic cleanup of uploaded files and temp directories
+- **Error Handling**: JSON responses for file validation errors, processing failures, and unsupported formats
+- **Content Analysis**: Structured analysis output in table format for all media types with pattern detection and insights
 
 ## 📸 Screenshots
 
