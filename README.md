@@ -99,6 +99,30 @@ graph TB
   - Videos: Frame-by-frame OCR + audio transcription
 - **Modular Architecture**: Easy to extend with new file types and analysis methods
 
+## 📸 Screenshots
+
+### Frontend Interface
+<div align="center">
+  <img src="assets/PolySensor Main Interface.png" alt="PolySensor Main Interface" width="800"/>
+  <p><em>Main application interface with drag-and-drop file upload</em></p>
+</div>
+
+### Analysis Results
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="assets/Presentation-test.png" alt="Raw File Content" width="400"/>
+        <p><em>Raw file content input</em></p>
+      </td>
+      <td align="center">
+        <img src="assets/Presentation-result.png" alt="Analysis Results Display" width="400"/>
+        <p><em>AI-powered analysis results with markdown rendering and export options</em></p>
+      </td>
+    </tr>
+  </table>
+</div>
+
 ## 📋 Supported File Formats
 
 <h2 align="center"><i>Image Files</i></h2>
