@@ -113,11 +113,11 @@ graph TB
     <tr>
       <td align="center">
         <img src="assets/Presentation-test.png" alt="Raw File Content" width="400"/>
-        <p><em>Raw file content input</em></p>
+        <p><em>Raw file [Presentation File] as input</em></p>
       </td>
       <td align="center">
         <img src="assets/Presentation-result.png" alt="Analysis Results Display" width="400"/>
-        <p><em>AI-powered analysis results with markdown rendering and export options</em></p>
+        <p><em>PolySensor analysis results, which is exportable to pdf format.</em></p>
       </td>
     </tr>
   </table>
