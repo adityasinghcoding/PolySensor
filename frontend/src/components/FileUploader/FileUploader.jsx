@@ -57,8 +57,8 @@ function FileUploader({ onFileSelect, selectedFile }) {
          ) : (
             <div className="upload-prompt">
                <div className="upload-icon">⬆️</div>
-               <h3>Click to upload or drag and drop</h3>
-               <p>You can feed me 😋 documents, images, audio, and video files</p>
+               <h3>Upload or drop the yummy data</h3>
+               <p><h5>You can feed me 😋 documents, images, audio, & video files.</h5></p>
             </div>
          )}
       </div>

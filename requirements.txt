@@ -11,9 +11,8 @@ langchain
 langchain-google-genai
 python-dotenv
 pymilvus
-getpass
-base64
-fastapi uvicorn
+fastapi
+uvicorn
 flask
 # npm install remark-gfm
 # npm install ReactMarkdown

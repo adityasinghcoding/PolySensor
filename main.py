@@ -77,12 +77,19 @@ def analyze_file():
 
       if file_path.lower().endswith(doc_extensions):
          doc_json_data = unstructured_doc_extraction(file_path)
+         if isinstance(doc_json_data, str):
+            os.remove(file_path)
+            return jsonify({'error': doc_json_data}), 400
          if doc_json_data:
                llm_doc_output = document_chain.run(doc_json_data=doc_json_data)
                result = llm_doc_output
 
       elif file_path.lower().endswith(image_extensions):
-         image_path = image(file_path)
+         image_result = image(file_path)
+         if not os.path.exists(image_result):
+            os.remove(file_path)
+            return jsonify({'error': image_result}), 400
+         image_path = image_result
          if image_path:
                with open(image_path, "rb") as img:
                   image_bytes = img.read()
@@ -102,7 +109,11 @@ def analyze_file():
                   result = final_image_prompt.content
 
       elif file_path.lower().endswith(audio_extensions):
-         audio_path = audio(file_path)
+         audio_result = audio(file_path)
+         if isinstance(audio_result, str):
+            os.remove(file_path)
+            return jsonify({'error': audio_result}), 400
+         audio_path = audio_result
          if audio_path:
                buffer = BytesIO()
                audio_path.export(buffer, format='mp3')
@@ -123,7 +134,11 @@ def analyze_file():
                result = final_audio_prompt.content
 
       elif file_path.lower().endswith(video_extensions):
-         video_path = video(file_path)
+         video_result = video(file_path)
+         if not os.path.exists(video_result):
+            os.remove(file_path)
+            return jsonify({'error': video_result}), 400
+         video_path = video_result
          if video_path:
                with open(video_path, "rb") as vid:
                   video_bytes = vid.read()

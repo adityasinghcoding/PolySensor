@@ -11,7 +11,8 @@ export const analyzeFile = async (file) => {
       });
 
       if (!response.ok) {
-         throw new Error(`HTTP error! status: ${response.status}`);
+         const errorData = await response.json().catch(() => ({}));
+         throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
@@ -19,7 +20,7 @@ export const analyzeFile = async (file) => {
 
    } catch (error) {
       console.error('API call failed:', error);
-      throw new Error('Failed to digest the file: Please check if the backend server is running.');
+      throw error;
    }
 };
 

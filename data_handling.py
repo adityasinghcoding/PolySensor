@@ -125,8 +125,8 @@ from moviepy.editor import VideoFileClip
 def audio(audio):
     audio = os.path.normpath(audio)
     if not os.path.exists(audio):
-        print(f"File doesn't exist, recheck the given file path: {audio}!\n")
-        return ""
+        err = f"File doesn't exist, recheck the given file path: {audio}!\n"
+        return err
 
     # Limiting video length
     try:
@@ -134,43 +134,43 @@ def audio(audio):
         if len(audio) > 60*1000:  # 1 min audio length limit, pydub works on milliseconds fundamentally so feeding accordingly
             in_minute = len(audio) / 1000
             in_minute = in_minute / 60
-            limit_message = f"Audio length is {in_minute:.2f} min which exceeds 1 minute.\n" \
-            "For longer audio input think once to subscribe our monthly premium!"
+            limit_message = f"Audio length is {in_minute:.2f} min which exceeds 1 minute.\nFor longer audio input think once to subscribe our monthly premium!"
             return limit_message
         else:
             return audio
 
     except Exception as e:
-        print(f"Audio: {audio} is not supported\n {e}")
-        return ""
+        err = f"Audio: {audio} is not supported\n {e}"
+        return err
 
 def image(image):
     image = os.path.normpath(image)
     if not os.path.exists(image):
-        print(f"File doesn't exist, recheck the given file path: {image}!\n")
-        return ""
+        err = f"File doesn't exist, recheck the given file path: {image}!\n"
+        return err
     else:
        return image
 
 def video(video):
     video = os.path.normpath(video)
     if not os.path.exists(video):
-        print(f"File doesn't exist, recheck the given file path: {video}!\n")
-        return ""
+        err = f"File doesn't exist, recheck the given file path: {video}!\n"
+        return err
     
     # Limiting video length
     try:
         with VideoFileClip(video) as clip:
             if clip.duration > 30:  # 30 sec video length limit
-                limit_message = f"Video length is {clip.duration} which exceeds 30 seconds.\n" \
-                "For longer video input think once to subscribe our monthly premium!"
+                duration = clip.duration
+                duration = duration / 60
+                limit_message = f"Video length is {duration:.2f} min which exceeds 30 seconds.\nFor longer video input think once to subscribe our monthly premium!"
                 return limit_message
             else:
                 return video
             
     except Exception as e:
-        print(f"Video: {video} is not supported\n {e}")
-        return ""
+        err = f"Video: {video} is not supported\n {e}"
+        return err
 
 
 def unstructured_doc_extraction(doc):
@@ -210,8 +210,10 @@ def unstructured_doc_extraction(doc):
             # print("\n\n", unstructured_doc)
             return unstructured_doc
         else:
-            print("No extractable content.\n")
+            err = "No extractable content.\n"
+            return err
 
     except Exception as e:
-        print(f"Error loading file: {e}")
+        err = f"Error loading file: {e}"
+        return err
 

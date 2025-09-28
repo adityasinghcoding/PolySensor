@@ -20,20 +20,92 @@ function fixMarkdownTables(markdown) {
     // Split input into lines
     const lines = processedMarkdown.split('\n');
 
-    for (let i = 0; i < lines.length - 1; i++) {
-        // Check if next line contains only dashes or colons (separator line)
-        if (/^ *:?-{3,}:? *( *\| *:?-{3,}:? *)*$/.test(lines[i+1].trim())) {
-            // If current line doesn't have pipes, add pipes around it
-            if (!lines[i].trim().startsWith('|')) {
-                lines[i] = '| ' + lines[i].trim().replace(/\s+/g, ' | ') + ' |';
+    let i = 0;
+    while (i < lines.length) {
+        let line = lines[i].trim();
+
+        // Look for table indicators like "Table X:" or lines with multiple pipes
+        if (line.includes('Table ') || (line.includes('|') && line.split('|').length > 2)) {
+            // Potential table start
+            let tableLines = [];
+            let headerFound = false;
+            let separatorFound = false;
+            let numCols = 0;
+
+            // Collect potential table lines
+            while (i < lines.length && (lines[i].trim().includes('|') || lines[i].trim() === '' || !headerFound || !separatorFound)) {
+                tableLines.push(lines[i]);
+                let currentLine = lines[i].trim();
+                if (currentLine.includes('|') && currentLine.split('|').length > 2) {
+                    if (!headerFound) {
+                        headerFound = true;
+                        // Extract columns from header
+                        const parts = currentLine.split('|').map(p => p.trim()).filter(p => p !== '');
+                        numCols = parts.length;
+                    } else if (!separatorFound && currentLine.includes('---')) {
+                        separatorFound = true;
+                    }
+                }
+                i++;
             }
-            // Ensure separator line also starts and ends with pipes
-            if (!lines[i+1].trim().startsWith('|')) {
-                const cols = lines[i].split('|').length - 2; // exclude ends
-                lines[i+1] = '|' + ' --- |'.repeat(cols);
+
+            if (numCols > 0 && tableLines.length > 1) {
+                // Fix header: Ensure it starts and ends with |
+                let header = tableLines[0].trim();
+                if (!header.startsWith('|')) header = '|' + header;
+                if (!header.endsWith('|')) header += '|';
+                const headerCols = header.split('|').map(col => col.trim()).slice(1, -1); // Remove outer pipes
+                while (headerCols.length < numCols) headerCols.push('');
+                header = '| ' + headerCols.join(' | ') + ' |';
+                tableLines[0] = header;
+
+                // Add or fix separator if missing
+                let separator = tableLines.findIndex(l => l.trim().includes('---'));
+                if (separator === -1) {
+                    // Insert after header
+                    let sep = '|';
+                    for (let j = 0; j < numCols; j++) {
+                        sep += ' --- |';
+                    }
+                    tableLines.splice(1, 0, sep);
+                } else {
+                    // Fix existing separator
+                    let sepLine = tableLines[separator].trim();
+                    if (!sepLine.startsWith('|')) sepLine = '|' + sepLine;
+                    if (!sepLine.endsWith('|')) sepLine += '|';
+                    const sepParts = sepLine.split('|').map(p => p.trim()).slice(1, -1);
+                    let fixedSep = '|';
+                    for (let j = 0; j < numCols; j++) {
+                        fixedSep += ' --- |';
+                    }
+                    tableLines[separator] = fixedSep;
+                }
+
+                // Fix data rows
+                for (let j = (separatorFound ? 2 : 1); j < tableLines.length; j++) {
+                    let row = tableLines[j].trim();
+                    if (row.includes('|')) {
+                        if (!row.startsWith('|')) row = '|' + row;
+                        if (!row.endsWith('|')) row += '|';
+                        const rowCols = row.split('|').map(col => col.trim()).slice(1, -1);
+                        while (rowCols.length < numCols) rowCols.push('');
+                        if (rowCols.length > numCols) rowCols.length = numCols; // Truncate if too many
+                        tableLines[j] = '| ' + rowCols.join(' | ') + ' |';
+                    }
+                }
+
+                // Replace the collected lines back
+                const startIndex = i - tableLines.length;
+                lines.splice(startIndex, tableLines.length, ...tableLines);
+                i = startIndex + tableLines.length;
+            } else {
+                i++;
             }
+        } else {
+            i++;
         }
     }
+
     // Rejoin lines and return
     return lines.join('\n');
 }
