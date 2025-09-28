@@ -27,7 +27,7 @@ function App() {
       const result = await analyzeFile(selectedFile);
       setAnalysisResult(result);
     } catch (err) {
-      setError('Failed to analyze content. Please try again.');
+      setError(err.message || 'Failed to analyze content. Please try again.');
       console.error('Analysis error:', err);
     } finally {
       setIsLoading(false);

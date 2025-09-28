@@ -134,9 +134,9 @@ def audio(audio):
         if len(audio) > 60*1000:  # 1 min audio length limit, pydub works on milliseconds fundamentally so feeding accordingly
             in_minute = len(audio) / 1000
             in_minute = in_minute / 60
-            print(f"Audio length is {in_minute} min which exceeds 1 minute.\n" \
-            "For longer audio input think once to subscribe our monthly premium!")
-            return ""
+            limit_message = f"Audio length is {in_minute:.2f} min which exceeds 1 minute.\n" \
+            "For longer audio input think once to subscribe our monthly premium!"
+            return limit_message
         else:
             return audio
 
@@ -162,9 +162,9 @@ def video(video):
     try:
         with VideoFileClip(video) as clip:
             if clip.duration > 30:  # 30 sec video length limit
-                print(f"Video length is {clip.duration} which exceeds 30 seconds.\n" \
-                "For longer video input think once to subscribe our monthly premium!")
-                return ""
+                limit_message = f"Video length is {clip.duration} which exceeds 30 seconds.\n" \
+                "For longer video input think once to subscribe our monthly premium!"
+                return limit_message
             else:
                 return video
             

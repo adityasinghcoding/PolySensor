@@ -30,7 +30,7 @@ function FileUploader({ onFileSelect, selectedFile }) {
 
    return (
       <div
-         className="file-uploader"
+         className={`file-uploader ${selectedFile ? 'selected' : ''}`}
          onDrop={handleDrop}
          onDragOver={handleDragOver}
          onClick={openFileDialog}
