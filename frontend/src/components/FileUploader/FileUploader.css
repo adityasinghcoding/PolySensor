@@ -69,6 +69,16 @@
   color: #9ca3af;
   transition: color 0.3s ease;
   text-align: center;
+  display: block;
+  margin: 0 auto;
+}
+
+.upload-icon img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
 }
 
 .file-uploader:hover .upload-icon {

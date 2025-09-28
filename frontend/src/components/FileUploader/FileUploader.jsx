@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import UploadIcon from '../../assets/polysensor-yummy.png';
 import './FileUploader.css'
 
 function FileUploader({ onFileSelect, selectedFile }) {
@@ -56,7 +57,7 @@ function FileUploader({ onFileSelect, selectedFile }) {
             </div>
          ) : (
             <div className="upload-prompt">
-               <div className="upload-icon">⬆️</div>
+               <img src={UploadIcon} alt="Upload Icon" className="upload-icon" />
                <h3>Upload or drop the yummy data</h3>
                <p><h5>You can feed me 😋 documents, images, audio, & video files.</h5></p>
             </div>
