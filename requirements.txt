@@ -14,7 +14,6 @@ pymilvus
 fastapi
 uvicorn
 flask
-jspdf 
 
 # npm install ReactMarkdown
 # npm install marked dompurify
