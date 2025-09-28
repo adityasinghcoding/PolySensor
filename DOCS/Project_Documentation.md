@@ -186,7 +186,6 @@ PolySensor/
 ├── .env                   # Environment variables (create this)
 ├── .gitignore            # Git ignore rules
 ├── README.md             # Project README
-├── TODO.md               # Development tasks
 ├── DOCS/                 # Documentation
 │   └── Project_Documentation.md
 ├── frontend/             # React frontend

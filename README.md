@@ -332,12 +332,15 @@ PolySensor/
 ├── prompts.py                 # AI prompt templates for different content types
 ├── requirements.txt           # Python dependencies
 ├── .env                       # Environment variables (API keys)
+├── .gitignore                 # Git ignore rules
+├── README.md                  # Project README
+├── DOCS/                      # Documentation
 ├── frontend/                  # React frontend application
 │   ├── public/
 │   │   ├── index.html         # Main HTML template
 │   │   └── favicon.ico
 │   ├── src/
-│   │   ├── components/        # Reusable React components
+│   │   ├── components/           # Reusable React components
 │   │   │   ├── AnalysisResults/  # Displays analysis output with markdown support
 │   │   │   ├── FileUploader/     # Drag-and-drop file upload interface
 │   │   │   └── Loading/          # Loading spinner component
@@ -349,9 +352,17 @@ PolySensor/
 │   │   ├── App.css               # Global styles
 │   │   ├── main.jsx              # React application entry point
 │   │   └── index.css             # Base styles
-│   ├── package.json           # Node.js dependencies and scripts
-│   └── vite.config.js         # Vite build configuration
-└── README.md                  # This file
+│   ├── package.json              # Node.js dependencies and scripts
+│   └── vite.config.js            # Vite build configuration
+├── assets/                       # Project assets
+└── utilities/                    # Additional tools
+
+PolySensor/
+├── main.py                 # Flask backend server
+├── data_handling.py        # Media processing functions
+├── prompts.py             # AI prompt templates
+├── requirements.txt       # Python dependencies
+├── .env                   # Environment variables (create this)
 ```
 
 ### Core Modules
