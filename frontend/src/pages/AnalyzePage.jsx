@@ -2,7 +2,7 @@ import React from "react";
 import AnalysisResults from '../components/AnalysisResults';
 import Loading from '../components/Loading/Loading';
 
-function AnalyzePage({ selectedFile, analysisResult, error, isLoading }) {
+function AnalyzePage({ selectedFile, analysisResult, error, isLoading, resultRef }) {
    return (
       <div className="analyze-page">
          {error && (
@@ -16,7 +16,7 @@ function AnalyzePage({ selectedFile, analysisResult, error, isLoading }) {
          )}
 
          {analysisResult && (
-            <AnalysisResults result={analysisResult} />
+            <AnalysisResults result={analysisResult} resultRef={resultRef} />
          )}
       </div>
    );
