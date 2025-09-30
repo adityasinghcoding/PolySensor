@@ -70,8 +70,10 @@ def analyze_file():
          return jsonify({'error': 'No file selected'}), 400
 
       # saving file temporarily
-      file_path = os.path.join('temp', file.filename)
-      os.makedirs('temp', exist_ok=True)
+      temp_dir = os.path.join(os.getcwd(), 'temp')
+      if not os.path.exists(temp_dir):
+          os.makedirs(temp_dir, exist_ok=True)
+      file_path = os.path.join(temp_dir, file.filename)
       file.save(file_path)
 
       result = None
@@ -89,9 +91,7 @@ def analyze_file():
          image_result = image(file_path)
          if not os.path.exists(image_result):
             os.remove(file_path)
-            
-         if isinstance(image_result, str):
-            return jsonify({'error': image_result}), 400
+            return jsonify({'error': 'Image file not found after processing'}), 400
          image_path = image_result
          if image_path:
                with open(image_path, "rb") as img:
@@ -173,16 +173,42 @@ def analyze_file():
    except Exception as e:
       return jsonify({'error': str(e)}), 500
    finally:
-      # Cleanup temp file and folder if possible
+      # Cleanup temp file after processing, keep temp folder permanent
       if file_path and os.path.exists(file_path):
          os.remove(file_path)
-      temp_dir = 'temp'
-      if os.path.exists(temp_dir) and not os.listdir(temp_dir):
-         os.rmdir(temp_dir)
+
+# New endpoint for PDF export
+@app.route('/export-pdf', methods=['POST'])
+def export_pdf():
+    try:
+        data = request.get_json()
+        content = data.get('content', '')
+
+        # Create PDF in memory
+        buffer = io.BytesIO()
+        p = canvas.Canvas(buffer, pagesize=letter)
+        width, height = letter
+
+        # Simple text wrapping for PDF
+        lines = content.split('\n')
+        y = height - 40
+        for line in lines:
+            if y < 40:
+                p.showPage()
+                y = height - 40
+            p.drawString(40, y, line)
+            y -= 14
+
+        p.save()
+        buffer.seek(0)
+
+        return send_file(buffer, as_attachment=True, download_name='analysis-results.pdf', mimetype='application/pdf')
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
    port = int(os.environ.get('PORT', 5000))
-   app.run(host='0.0.0.0', port=port, debug=False)
+   app.run(host='0.0.0.0', port=port, debug=True)
 
    # if file_path.lower().endswith(('.mp4', '.mkv')):
    # video_text_data, video_audio_data = video_audio_text(file_path, interval_sec = 3)

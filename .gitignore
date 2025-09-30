@@ -19,6 +19,7 @@ node_modules
 # Ignoring the files by matching their extensions 
 *.jpg
 *.wav
+TODO.md
 
 # Ignoring the folders
 *_frames/

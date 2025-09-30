@@ -323,6 +323,49 @@ The React app will be available at `http://localhost:5173`
 3. **Access the Application**
 Open your browser and navigate to `http://localhost:5173` to use the web interface. Upload files through the drag-and-drop interface and receive AI-powered analysis results.
 
+## 🐳 Docker Setup (Recommended)
+
+For easier development and deployment, PolySensor supports Docker. This ensures consistent environments and handles system dependencies automatically.
+
+### Prerequisites
+- Docker and Docker Compose installed on your system
+- Google Gemini API key
+
+### Quick Start with Docker
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/adityasinghcoding/PolySensor.git
+cd PolySensor
+```
+
+2. **Set up environment variables**
+```bash
+cp .env.example .env
+# Edit .env and add your Google API key
+GOOGLE_API_KEY=your_api_key_here
+```
+
+3. **Run the application**
+```bash
+docker-compose up --build
+```
+
+4. **Access the Application**
+- Frontend: `http://localhost:5173`
+- Backend API: `http://localhost:5000`
+
+### Docker Commands
+- **Start services**: `docker-compose up`
+- **Build and start**: `docker-compose up --build`
+- **Stop services**: `docker-compose down`
+- **View logs**: `docker-compose logs -f [service_name]`
+- **Rebuild specific service**: `docker-compose up --build [service_name]`
+
+### Production Deployment
+- **Backend**: The `render.yaml` is configured for Docker deployment on Render
+- **Frontend**: Deploy to Vercel as usual (static hosting)
+
 ## 🏗️ Project Structure
 
 ```

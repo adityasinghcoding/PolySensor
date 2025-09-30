@@ -4,15 +4,12 @@ import FileUploader from './components/FileUploader/FileUploader';
 import './App.css';
 import { analyzeFile } from './utils/apiService';
 import logo from '../../assets/PolySensor no bg 200px.png';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
 
 function App() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [analysisResult, setAnalysisResult] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  // const [isMenuOpen, setIsMenuOpen] = useState(false);
   const resultRef = useRef(null);
 
   const handleFileSelect = (file) => {
@@ -38,46 +35,35 @@ function App() {
     }
   };
 
-  // const exportPDF = async () => {
-  //   console.log('Export PDF called', analysisResult, resultRef.current);
-  //   if (!analysisResult || !resultRef.current) return;
-  //
-  //   try {
-  //     const canvas = await html2canvas(resultRef.current, {
-  //       scale: 2,
-  //       useCORS: true,
-  //       allowTaint: true,
-  //       backgroundColor: '#ffffff',
-  //     });
-  //     console.log('Canvas created', canvas);
-  //
-  //     const imgData = canvas.toDataURL('image/png');
-  //     const pdf = new jsPDF('p', 'mm', 'a4');
-  //     const imgWidth = 210;
-  //     const pageHeight = 295;
-  //     const imgHeight = (canvas.height * imgWidth) / canvas.width;
-  //     let heightLeft = imgHeight;
-  //
-  //     let position = 0;
-  //
-  //     pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-  //     heightLeft -= pageHeight;
-  //
-  //     while (heightLeft >= 0) {
-  //       position = heightLeft - imgHeight;
-  //       pdf.addPage();
-  //       pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-  //       heightLeft -= pageHeight;
-  //     }
-  //
-  //     pdf.save('analysis-results.pdf');
-  //     console.log('PDF saved');
-  //     // setIsMenuOpen(false);
-  //   } catch (err) {
-  //     console.error('PDF export failed:', err);
-  //     setError('Failed to export PDF. Please try again.');
-  //   }
-  // };
+  const exportPDF = async () => {
+    if (!analysisResult) return;
+
+    try {
+      const response = await fetch('http://localhost:5000/export-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content: analysisResult }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to export PDF from backend');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'analysis-results.pdf');
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (err) {
+      console.error('PDF export failed:', err);
+      setError('Failed to export PDF. Please try again.');
+    }
+  };
 
   return (
     <div className={`app ${selectedFile ? 'shrink' : ''}`}>
@@ -113,20 +99,15 @@ function App() {
               {isLoading ? 'Analyzing...' : 'Analyze File'}
             </button>
           )}
-          {/* {analysisResult && (
-            <>
-              <div className={`hamburger ${isMenuOpen ? 'open' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              <ul className={`menu-dropdown ${isMenuOpen ? 'open' : ''}`}>
-                <li className="menu-item" onClick={exportPDF}>
-                  Export to PDF
-                </li>
-              </ul>
-            </>
-          )} */}
+          {analysisResult && (
+            <button
+              onClick={exportPDF}
+              className="export-button"
+              title="Export to PDF"
+            >
+              Export to PDF
+            </button>
+          )}
         </div>
       </div>
     </div>

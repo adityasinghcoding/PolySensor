@@ -1,9 +1,8 @@
 services:
   - type: web
     name: polysensor-backend
-    runtime: python3
-    buildCommand: pip install -r requirements.txt
-    startCommand: python main.py
+    runtime: docker
+    dockerfilePath: ./Dockerfile.backend
     envVars:
       - key: GOOGLE_API_KEY
         sync: false  # Set manually in Render dashboard
