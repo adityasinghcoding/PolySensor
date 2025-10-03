@@ -1,28 +1,41 @@
-version: '3.8'
-
 services:
   backend:
+    # Building the backend Docker image
     build:
-      context: .
-      dockerfile: Dockerfile.backend
+      context: .               # Using the current directory as build context
+      dockerfile: Dockerfile   # Using Dockerfile in current directory
+    
+    # Mapping backend container port 5000 to host machine port 5000
     ports:
       - "5000:5000"
+    
+    # Passing environment variable GOOGLE_API_KEY from local host machine (pc) into the container
     environment:
-      - FLASK_ENV=development
-    env_file:
-      - .env
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}  # Loading API key
+    
+    # Mounting current project directory onto /polysensor in container for live code updates during development
+    # Remove this in production to avoid security and performance issues
     volumes:
-      - ./temp:/app/temp
-    depends_on:
-      - frontend  # Optional, for startup order
+      - .:/polysensor
+    
+    # Making sure the frontend service runs before backend starts (directing startup order of the project)
+    # Removed depends_on frontend as backend should not depend on frontend
+    # depends_on:
+    #   - frontend
 
   frontend:
+    # Building the frontend Docker image
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: ./frontend      # Using frontend folder as build context
+      dockerfile: Dockerfile   # Using Dockerfile inside frontend folder
+    
+    # Mapping frontend container port 5173 to host machine port 5173 
     ports:
       - "5173:5173"
+    
+    # Mounting frontend project folder to /polysensor in container for live reload of frontend code
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    command: npm run dev -- --host 0.0.0.0
+      - ./frontend:/polysensor  
+    
+    # Overriding default Docker command with npm dev server start command
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
