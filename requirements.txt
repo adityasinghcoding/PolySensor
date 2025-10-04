@@ -1,19 +1,21 @@
 unstructured[all-docs]
-huggingface_hub[hf_xet]
-pytesseract
-Pillow
-SpeechRecognition
+# huggingface_hub[hf_xet]
+# pytesseract
+# Pillow
+# SpeechRecognition
 pydub
-pillow
+# pillow
 moviepy
-numpy
+# numpy
 langchain
 langchain-google-genai
 python-dotenv
-pymilvus
-fastapi
-uvicorn
+# pymilvus
+# fastapi
+# uvicorn
 flask
+flask-cors
+reportlab
 
 # npm install ReactMarkdown
 # npm install marked dompurify

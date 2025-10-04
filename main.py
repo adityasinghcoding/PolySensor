@@ -14,6 +14,8 @@ from data_handling import (
    video
    )
 from io import BytesIO
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 # import mimetypes
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
@@ -185,7 +187,7 @@ def export_pdf():
         content = data.get('content', '')
 
         # Create PDF in memory
-        buffer = io.BytesIO()
+        buffer = BytesIO()
         p = canvas.Canvas(buffer, pagesize=letter)
         width, height = letter
 

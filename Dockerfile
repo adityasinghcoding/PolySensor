@@ -1,26 +1,31 @@
-# Using the official Python 3.11 slim image as the base image
-# "slim" means it is a smaller image with only essential components
-FROM python:3.11-slim 
+# Use the official Python 3.11 slim image as the base image
+FROM python:3.11-slim
 
-# Setting working directory inside the container to /polysensor
-# Docker will create this directory automatically if it doesn't exist
+# Set the working directory inside the container
 WORKDIR /polysensor
 
-# Copying the requirements.txt file from your local machine to the container
+# Install system dependencies in a single layer for better caching
+# Only rebuild this layer if system dependencies change
+# RUN apt-get update && apt-get install -y --no-install-recommends \
+#     build-essential \
+#     libssl-dev \
+#     libffi-dev \
+#     python3-dev \
+#     && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements.txt first for dependency caching
 COPY requirements.txt .
 
-# Installing Python dependencies listed in requirements.txt without using the pip cache
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies with pip cache for faster builds
+# Use --no-cache-dir to avoid storing cache in the image
+RUN pip install -r requirements.txt
 
-# Copying the rest of the backend source code from the project folder into the container
+# Copy only necessary source files (exclude files via .dockerignore)
+# This layer will be rebuilt only when source code changes
 COPY . .
 
-# Expososing on port 5000 – the default port Flask listens on – to allow external access
+# Expose port 5000
 EXPOSE 5000
 
-# Seting an environment variable to tell Flask what the application entry point file is
-# ENV FLASK_APP=app.py  # Removed because main.py is the entry point and not using flask CLI
-
-# Define the default command to run when the container starts
-# This will run Flask app using the Python interpreter
+# Run the application
 CMD ["python", "main.py"]

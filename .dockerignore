@@ -1,0 +1,26 @@
+# Ignore Python cache and environment files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+env/
+venv/
+
+# Ignore node modules and frontend build output
+node_modules/
+frontend/dist/
+
+# Ignore git files
+.git
+.gitignore
+TODO.md
+
+# Ignore logs and temp files
+*.log
+temp/
+logs/
+
+# Ignore Dockerfile and docker-compose override files if not needed in build context
+Dockerfile.dev
+docker-compose.override.yml

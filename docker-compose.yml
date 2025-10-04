@@ -1,41 +1,30 @@
 services:
   backend:
-    # Building the backend Docker image
+    image: backend
     build:
-      context: .               # Using the current directory as build context
-      dockerfile: Dockerfile   # Using Dockerfile in current directory
-    
-    # Mapping backend container port 5000 to host machine port 5000
+      context: .
+      dockerfile: Dockerfile
+      # Enable BuildKit for faster builds and better caching
+      args:
+        BUILDKIT_INLINE_CACHE: 1
     ports:
       - "5000:5000"
-    
-    # Passing environment variable GOOGLE_API_KEY from local host machine (pc) into the container
     environment:
-      - GOOGLE_API_KEY=${GOOGLE_API_KEY}  # Loading API key
-    
-    # Mounting current project directory onto /polysensor in container for live code updates during development
-    # Remove this in production to avoid security and performance issues
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+    # Mount source for development live reload
     volumes:
       - .:/polysensor
-    
-    # Making sure the frontend service runs before backend starts (directing startup order of the project)
-    # Removed depends_on frontend as backend should not depend on frontend
-    # depends_on:
-    #   - frontend
 
   frontend:
-    # Building the frontend Docker image
     build:
-      context: ./frontend      # Using frontend folder as build context
-      dockerfile: Dockerfile   # Using Dockerfile inside frontend folder
-    
-    # Mapping frontend container port 5173 to host machine port 5173 
+      context: ./frontend
+      dockerfile: Dockerfile
+      # Enable BuildKit for faster builds
+      args:
+        BUILDKIT_INLINE_CACHE: 1
     ports:
       - "5173:5173"
-    
-    # Mounting frontend project folder to /polysensor in container for live reload of frontend code
+    # Mount source for development live reload
     volumes:
-      - ./frontend:/polysensor  
-    
-    # Overriding default Docker command with npm dev server start command
+      - ./frontend:/polysensor
     command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

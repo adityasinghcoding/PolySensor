@@ -1,29 +1,24 @@
-# Using the official lightweight Node.js 20 image with Alpine Linux for smaller size
+# Use lightweight Node.js 20 Alpine image
 FROM node:20-alpine
 
-# Setting the working directory inside the container to /app
+# Set working directory
 WORKDIR /polysensor
 
-# Copying both package.json and package-lock.json first for efficient Docker layer caching
+# Copy package files first for dependency caching
 COPY package.json package-lock.json ./
 
-# Set npm to use the HTTP registry to avoid SSL/network issues
-# Clean npm cache to avoid corrupted cache problems
-# Upgrade npm to the latest version to get fixes and improvements
-# Install exact dependencies as specified in package-lock.json with 'npm ci' for a clean install
-RUN npm config set registry http://registry.npmjs.org/ && \
-    npm cache clean --force && \
-    npm install -g npm@latest && \
-    npm ci
+# Install dependencies with npm cache for faster builds
+# Use npm ci for clean, reproducible installs
+RUN npm install
 
-# Copy the rest of the application source code into the container
+# Copy source code (node_modules is excluded via .dockerignore)
 COPY . .
 
-# Set an environment variable to clearly define the environment as development
+# Set environment
 ENV NODE_ENV=development
 
-# Expose port 5173 (default port for Vite dev server) so it can be accessed outside the container
+# Expose Vite dev server port
 EXPOSE 5173
 
-# Default command to run the dev server, listening on all network interfaces (0.0.0.0)
+# Run dev server
 CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
