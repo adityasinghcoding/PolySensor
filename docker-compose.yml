@@ -27,4 +27,8 @@ services:
     # Mount source for development live reload
     volumes:
       - ./frontend:/polysensor
+      - frontend_node_modules:/polysensor/node_modules
     command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+
+volumes:
+  frontend_node_modules:

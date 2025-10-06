@@ -9,7 +9,7 @@ COPY package.json package-lock.json ./
 
 # Install dependencies with npm cache for faster builds
 # Use npm ci for clean, reproducible installs
-RUN npm install
+RUN --mount=type=cache,target=/root/.cache/npm npm install
 
 # Copy source code (node_modules is excluded via .dockerignore)
 COPY . .

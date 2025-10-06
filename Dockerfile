@@ -18,7 +18,7 @@ COPY requirements.txt .
 
 # Install Python dependencies with pip cache for faster builds
 # Use --no-cache-dir to avoid storing cache in the image
-RUN pip install -r requirements.txt
+RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
 
 # Copy only necessary source files (exclude files via .dockerignore)
 # This layer will be rebuilt only when source code changes
