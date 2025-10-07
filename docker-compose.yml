@@ -16,6 +16,7 @@ services:
       - .:/polysensor
 
   frontend:
+    image: frontend
     build:
       context: ./frontend
       dockerfile: Dockerfile
