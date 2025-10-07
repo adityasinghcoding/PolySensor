@@ -6,6 +6,7 @@ services:
       dockerfile: Dockerfile
       # Enable BuildKit for faster builds and better caching
       args:
+      # this enables BuildKit cache for faster builds 
         BUILDKIT_INLINE_CACHE: 1
     ports:
       - "5000:5000"
