@@ -21,6 +21,9 @@ node_modules
 *.wav
 TODO.md
 
+# Ignoring the files
+requirements2.txt
+
 # Ignoring the folders
 *_frames/
 .venv/
