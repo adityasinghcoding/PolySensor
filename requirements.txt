@@ -3,7 +3,7 @@ unstructured[all-docs]
 # pytesseract
 # Pillow
 # SpeechRecognition
-pydub
+# pydub
 # pillow
 moviepy
 # numpy
