@@ -28,6 +28,7 @@ requirements2.txt
 *_frames/
 .venv/
 PolySensor/
+md/
 
 # Environment variables
 .env

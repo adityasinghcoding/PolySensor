@@ -128,7 +128,7 @@ function App() {
               className={`chat-message ${msg.role === 'user' ? 'user-message' : 'ai-message'}`}
             >
               <div className="chat-bubble">
-                <span className="chat-role">{msg.role === 'user' ? 'You' : 'AI'}</span>
+                <span className="chat-role">{msg.role === 'user' ? 'You' : 'PolySensor'}</span>
                 <p className="chat-text">{msg.question || msg.answer}</p>
               </div>
             </div>
