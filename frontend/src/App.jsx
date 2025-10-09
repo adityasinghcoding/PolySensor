@@ -11,12 +11,31 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const resultRef = useRef(null);
+  const [setHistory, setChatHistory] = useState([]);
+
 
   const handleFileSelect = (file) => {
     setSelectedFile(file);
     setAnalysisResult('');
     setError('');
   };
+
+  // sending user message to flask backend using react function
+  const Chatting = async (userQuery) => {
+    const response = await fetch('/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({query: userQuery}),
+  
+    });
+    // data.chats contains chart history
+    const data = await response.json();
+
+    // data.chats to update the state & UI
+    setChatHistory(data.chats);
+  }
 
   const handleAnalyze = async () => {
     if (!selectedFile) return;
@@ -82,6 +101,16 @@ function App() {
           resultRef={resultRef}
         />
       </main>
+
+      <div>
+        {setHistory.map((msg, idx) => (
+          <div key={idx}> 
+            <b>{msg.role == 'user' ? 'You': 'AI'}:</b>
+            {msg.question || msg.answer}
+          </div>
+        ))}
+        {/* add chat input or send button */}
+      </div>
 
       <div className={`bottom-controls ${analysisResult ? 'results-view' : ''}`}>
         <FileUploader

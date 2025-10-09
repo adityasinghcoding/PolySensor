@@ -17,7 +17,7 @@ from io import BytesIO
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 # import mimetypes
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, session, send_from_directory
 from flask_cors import CORS
 
 load_dotenv(find_dotenv())  # loading the environment variables from .env
@@ -57,15 +57,36 @@ image_extensions = ('.jpg', '.png', '.jpeg', '.webp', '.heif')
 audio_extensions = ('.mp3', '.wav', '.aiff', '.aac', '.ogg', '.flac')
 video_extensions = ('.mp4', '.mpeg', '.mov', '.avi', '.x-flav', '.mpg', '.webm', '.wmv', '.3gpp')
 
-app = Flask(__name__)
-CORS(app)  # this allows react app to communicate with this backend
+polysensor = Flask(__name__)
+CORS(polysensor)  # this allows react app (polysensor) to communicate with this backend
 
-@app.route('/analyze0', methods=['POST'])
+
+@polysensor.route('/chat', methods=['POST'])
+def chat_llm():
+   # initializing chat history
+   session.setdefault('chat_history', [])
+   user_query = request.json.get('query')
+
+   # Adding user messages to history(list)
+   session['chat_history'].append({'role': 'user', 'question': user_query})
+
+   # llm response on user query
+   llm_reply = llm.invoke(user_query)
+   session['chat_history'].append({'role': 'llm', 'answer': llm_reply.content})
+
+   # sending full history to frontend
+   return jsonify({'chats': session['chat_history']})
+
+
+
+@polysensor.route('/analyze0', methods=['POST'])
 def analyze_file():
    file_path = None
    try:
       if 'file' not in request.files:
          return jsonify({'error': 'No file provided'}), 400
+
+      global file
 
       file = request.files['file']
       if file.filename == '':
@@ -180,7 +201,7 @@ def analyze_file():
          os.remove(file_path)
 
 # New endpoint for PDF export
-@app.route('/export-pdf', methods=['POST'])
+@polysensor.route('/export-pdf', methods=['POST'])
 def export_pdf():
     try:
         data = request.get_json()
@@ -204,13 +225,13 @@ def export_pdf():
         p.save()
         buffer.seek(0)
 
-        return send_file(buffer, as_attachment=True, download_name='analysis-results.pdf', mimetype='application/pdf')
+        return send_file(buffer, as_attachment=True, download_name=f'{file.filename}_analysis-results.pdf', mimetype='application/pdf')
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
    port = int(os.environ.get('PORT', 5000))
-   app.run(host='0.0.0.0', port=port, debug=True)
+   polysensor.run(host='0.0.0.0', port=port, debug=True)
 
    # if file_path.lower().endswith(('.mp4', '.mkv')):
    # video_text_data, video_audio_data = video_audio_text(file_path, interval_sec = 3)
