@@ -1,56 +1,74 @@
 import React, { useState, useRef } from 'react';
 import AnalyzePage from './pages/AnalyzePage';
-import FileUploader from './components/FileUploader/FileUploader';
+import InputArea from './components/InputArea';
 import './App.css';
-import { analyzeFile } from './utils/apiService';
+import { analyzeFile, analyzeText } from './utils/apiService';
 import logo from '../../assets/PolySensor no bg 200px.png';
 
 function App() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [analysisResult, setAnalysisResult] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isFileLoading, setIsFileLoading] = useState(false);
+  const [isChatLoading, setIsChatLoading] = useState(false);
   const [error, setError] = useState('');
   const resultRef = useRef(null);
-  const [setHistory, setChatHistory] = useState([]);
+  const [chatHistory, setChatHistory] = useState([]);
 
-
-  const handleFileSelect = (file) => {
+  const handleFileAnalyze = async (file) => {
     setSelectedFile(file);
     setAnalysisResult('');
     setError('');
-  };
-
-  // sending user message to flask backend using react function
-  const Chatting = async (userQuery) => {
-    const response = await fetch('/chat', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({query: userQuery}),
-  
-    });
-    // data.chats contains chart history
-    const data = await response.json();
-
-    // data.chats to update the state & UI
-    setChatHistory(data.chats);
-  }
-
-  const handleAnalyze = async () => {
-    if (!selectedFile) return;
-
-    setIsLoading(true);
-    setError('');
+    setIsFileLoading(true);
 
     try {
-      const result = await analyzeFile(selectedFile);
+      const result = await analyzeFile(file);
       setAnalysisResult(result);
     } catch (err) {
       setError(err.message || 'Failed to analyze content. Please try again.');
       console.error('Analysis error:', err);
     } finally {
-      setIsLoading(false);
+      setIsFileLoading(false);
+    }
+  };
+
+  const handleAnalyzeText = async (text) => {
+    setIsFileLoading(true);
+    setError('');
+    setSelectedFile(null); // Clear file selection when analyzing text
+
+    try {
+      const result = await analyzeText(text);
+      setAnalysisResult(result);
+    } catch (err) {
+      setError(err.message || 'Failed to analyze text. Please try again.');
+      console.error('Text analysis error:', err);
+    } finally {
+      setIsFileLoading(false);
+    }
+  };
+
+  const handleChatMessage = async (message) => {
+    setIsChatLoading(true);
+    setError('');
+    setSelectedFile(null);
+
+    try {
+      const response = await fetch('http://localhost:5000/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: message }),
+      });
+      if (!response.ok) {
+        throw new Error('Chat API request failed');
+      }
+      const data = await response.json();
+      // Append new chats to existing chat history
+      setChatHistory((prevChats) => [...prevChats, ...data.chats]);
+    } catch (err) {
+      setError(err.message || 'Failed to send chat message. Please try again.');
+      console.error('Chat error:', err);
+    } finally {
+      setIsChatLoading(false);
     }
   };
 
@@ -97,37 +115,37 @@ function App() {
           selectedFile={selectedFile} 
           analysisResult={analysisResult} 
           error={error} 
-          isLoading={isLoading}
+          isLoading={isFileLoading}
           resultRef={resultRef}
         />
       </main>
 
-      <div>
-        {setHistory.map((msg, idx) => (
-          <div key={idx}> 
-            <b>{msg.role == 'user' ? 'You': 'AI'}:</b>
-            {msg.question || msg.answer}
-          </div>
-        ))}
-        {/* add chat input or send button */}
-      </div>
+      {chatHistory.length > 0 && (
+        <div className="chat-container">
+          {chatHistory.map((msg, idx) => (
+            <div
+              key={idx}
+              className={`chat-message ${msg.role === 'user' ? 'user-message' : 'ai-message'}`}
+            >
+              <div className="chat-bubble">
+                <span className="chat-role">{msg.role === 'user' ? 'You' : 'AI'}</span>
+                <p className="chat-text">{msg.question || msg.answer}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className={`bottom-controls ${analysisResult ? 'results-view' : ''}`}>
-        <FileUploader
-          onFileSelect={handleFileSelect}
+        <InputArea 
+          onAnalyze={handleAnalyzeText} 
+          onFileAnalyze={handleFileAnalyze} 
+          onChatMessage={handleChatMessage}
+          isFileLoading={isFileLoading}
+          isChatLoading={isChatLoading}
           selectedFile={selectedFile}
         />
         <div className="right-controls">
-          {selectedFile && (
-            <button
-              onClick={handleAnalyze}
-              disabled={isLoading}
-              className="analyze-button"
-            >
-              {isLoading && <span className="spinner"></span>}
-              {isLoading ? 'Analyzing...' : 'Analyze File'}
-            </button>
-          )}
           {analysisResult && (
             <button
               onClick={exportPDF}

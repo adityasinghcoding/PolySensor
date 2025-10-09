@@ -58,24 +58,28 @@ audio_extensions = ('.mp3', '.wav', '.aiff', '.aac', '.ogg', '.flac')
 video_extensions = ('.mp4', '.mpeg', '.mov', '.avi', '.x-flav', '.mpg', '.webm', '.wmv', '.3gpp')
 
 polysensor = Flask(__name__)
-CORS(polysensor)  # this allows react app (polysensor) to communicate with this backend
+polysensor.secret_key = os.getenv("FLASK_SECRET_KEY", "supersecretkey")  # Set a secret key for session management
+CORS(polysensor, resources={r"/*": {"origins": ["http://localhost:5173", "http://localhost:5174"]}})  # allow frontend origins
 
 
 @polysensor.route('/chat', methods=['POST'])
 def chat_llm():
-   # initializing chat history
-   session.setdefault('chat_history', [])
-   user_query = request.json.get('query')
+   try:
+      # initializing chat history
+      session.setdefault('chat_history', [])
+      user_query = request.json.get('query')
 
-   # Adding user messages to history(list)
-   session['chat_history'].append({'role': 'user', 'question': user_query})
+      # Adding user messages to history(list)
+      session['chat_history'].append({'role': 'user', 'question': user_query})
 
-   # llm response on user query
-   llm_reply = llm.invoke(user_query)
-   session['chat_history'].append({'role': 'llm', 'answer': llm_reply.content})
+      # llm response on user query
+      llm_reply = llm.invoke(user_query)
+      session['chat_history'].append({'role': 'llm', 'answer': llm_reply.content})
 
-   # sending full history to frontend
-   return jsonify({'chats': session['chat_history']})
+      # sending full history to frontend
+      return jsonify({'chats': session['chat_history']})
+   except Exception as e:
+      return jsonify({'error': str(e)}), 500
 
 
 
