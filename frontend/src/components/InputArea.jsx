@@ -1,9 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { FaSearch, FaVolumeMute, FaLightbulb, FaPaperclip, FaMicrophone, FaPaperPlane, FaTimes, FaFileAlt } from 'react-icons/fa';
+import { FaPaperclip, FaMicrophone, FaMicrophoneSlash, FaPaperPlane, FaTimes, FaFileExport } from 'react-icons/fa';
 import './InputArea.css';
 
 function InputArea({ onAnalyze, onFileAnalyze, onChatMessage, selectedFile, isFileLoading, isChatLoading }) {
   const [inputText, setInputText] = useState('');
+  const [isMicMuted, setIsMicMuted] = useState(true);
   const fileInputRef = useRef(null);
 
   const handleInputChange = (e) => {
@@ -32,18 +33,6 @@ function InputArea({ onAnalyze, onFileAnalyze, onChatMessage, selectedFile, isFi
     handleChatOrAnalyze();
   };
 
-  const handleSearchClick = () => {
-    alert('Search icon clicked - implement search functionality');
-  };
-
-  const handleMuteClick = () => {
-    alert('Mute icon clicked - implement mute functionality');
-  };
-
-  const handleLightbulbClick = () => {
-    alert('Lightbulb icon clicked - implement suggestions or help');
-  };
-
   const handleAttachClick = () => {
     if (fileInputRef.current && !isFileLoading) {
       fileInputRef.current.click();
@@ -59,7 +48,7 @@ function InputArea({ onAnalyze, onFileAnalyze, onChatMessage, selectedFile, isFi
   };
 
   const handleMicClick = () => {
-    alert('Microphone icon clicked - implement voice input');
+    setIsMicMuted(!isMicMuted);
   };
 
   const clearSelectedFile = (e) => {
@@ -67,6 +56,11 @@ function InputArea({ onAnalyze, onFileAnalyze, onChatMessage, selectedFile, isFi
     if (onFileAnalyze) {
       onFileAnalyze(null);
     }
+  };
+
+  const handleExportClick = () => {
+    // Implement export functionality here
+    alert('Export button clicked - implement export functionality');
   };
 
   return (
@@ -81,24 +75,18 @@ function InputArea({ onAnalyze, onFileAnalyze, onChatMessage, selectedFile, isFi
       }}
       onDragOver={(e) => e.preventDefault()}
     >
-      <button className="icon-button" title="Search" onClick={handleSearchClick} disabled={isFileLoading}>
-        <FaSearch />
-      </button>
-      <button className="icon-button" title="Mute" onClick={handleMuteClick} disabled={isFileLoading}>
-        <FaVolumeMute />
-      </button>
-      <button className="icon-button" title="Lightbulb" onClick={handleLightbulbClick} disabled={isFileLoading}>
-        <FaLightbulb />
-      </button>
       <input
         type="text"
         className="input-text-light"
-        placeholder={isFileLoading ? "Processing file..." : "Ask a follow-up"}
+        placeholder={isFileLoading ? "Processing file..." : "Ask PolySensor or Upload file"}
         value={inputText}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         disabled={isFileLoading}
       />
+      <button className="icon-button send-button" title="Send" onClick={handleAnalyzeClick} disabled={isChatLoading}>
+        {isChatLoading ? '...' : <FaPaperPlane />}
+      </button>
       <button className="icon-button" title="Attach file" onClick={handleAttachClick} disabled={isFileLoading}>
         <FaPaperclip />
       </button>
@@ -109,18 +97,16 @@ function InputArea({ onAnalyze, onFileAnalyze, onChatMessage, selectedFile, isFi
         onChange={handleFileChange}
         disabled={isFileLoading}
       />
-      <button className="icon-button" title="Microphone" onClick={handleMicClick} disabled={isFileLoading}>
-        <FaMicrophone />
+      <button className="icon-button" title={isMicMuted ? "Unmute Microphone" : "Mute Microphone"} onClick={handleMicClick} disabled={isFileLoading}>
+        {isMicMuted ? <FaMicrophoneSlash /> : <FaMicrophone />}
       </button>
-      <button className="icon-button send-button" title="Send" onClick={handleAnalyzeClick} disabled={isChatLoading}>
-        {isChatLoading ? '...' : <FaPaperPlane />}
+      <button className="icon-button" title="Export" onClick={handleExportClick} disabled={isFileLoading}>
+        <FaFileExport />
       </button>
       {selectedFile && (
         <div className="selected-file-info" title={selectedFile.name}>
-          <FaFileAlt className="file-icon" />
           <span className="file-name">{selectedFile.name}</span>
           <span className="file-size">{(selectedFile.size / (1024 * 1024)).toFixed(2)} MB</span>
-          <span className="file-type">{selectedFile.type}</span>
           <button className="clear-file-button" onClick={clearSelectedFile} title="Remove file" disabled={isFileLoading}>
             <FaTimes />
           </button>

@@ -2,7 +2,8 @@ python-dotenv==1.1.1
 langchain==0.3.27
 langchain-core==0.3.77
 langchain-google-genai==2.1.12
-unstructured==0.18.15
+# unstructured==0.18.15
+unstructured
 pydub==0.25.1
 moviepy==1.0.3
 reportlab
