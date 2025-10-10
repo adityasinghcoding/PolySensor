@@ -10,6 +10,8 @@ reportlab
 flask==3.1.2
 flask-cors
 
+# Note: Use Python 3.12 or earlier for deployment, as Python 3.13 removed the audioop module required by pydub.
+
 # Credits:
 # Aditya Singh
 # -> GitHub: https://adityasinghcoding.github.io/
