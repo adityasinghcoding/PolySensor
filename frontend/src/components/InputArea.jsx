@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { FaPaperclip, FaMicrophone, FaMicrophoneSlash, FaPaperPlane, FaTimes, FaFileExport } from 'react-icons/fa';
 import './InputArea.css';
 
-function InputArea({ onAnalyze, onFileAnalyze, onChatMessage, selectedFile, isFileLoading, isChatLoading }) {
+function InputArea({ onAnalyze, onFileAnalyze, onChatMessage, selectedFile, isFileLoading, isChatLoading, onExport, hasResults }) {
   const [inputText, setInputText] = useState('');
   const [isMicMuted, setIsMicMuted] = useState(true);
   const fileInputRef = useRef(null);
@@ -59,8 +59,11 @@ function InputArea({ onAnalyze, onFileAnalyze, onChatMessage, selectedFile, isFi
   };
 
   const handleExportClick = () => {
-    // Implement export functionality here
-    alert('Export button clicked - implement export functionality');
+    if (onExport && hasResults) {
+      onExport();
+    } else {
+      alert('No results to export');
+    }
   };
 
   return (
@@ -100,12 +103,12 @@ function InputArea({ onAnalyze, onFileAnalyze, onChatMessage, selectedFile, isFi
       <button className="icon-button" title={isMicMuted ? "Unmute Microphone" : "Mute Microphone"} onClick={handleMicClick} disabled={isFileLoading}>
         {isMicMuted ? <FaMicrophoneSlash /> : <FaMicrophone />}
       </button>
-      <button className="icon-button" title="Export" onClick={handleExportClick} disabled={isFileLoading}>
+      <button className="icon-button" title="Export" onClick={handleExportClick} disabled={isFileLoading || !hasResults}>
         <FaFileExport />
       </button>
       {selectedFile && (
         <div className="selected-file-info" title={selectedFile.name}>
-          <span className="file-name">{selectedFile.name}</span>
+          <span className="file-name">{selectedFile.name.length > 6 ? selectedFile.name.slice(0, 6) + '...' : selectedFile.name}</span>
           <span className="file-size">{(selectedFile.size / (1024 * 1024)).toFixed(2)} MB</span>
           <button className="clear-file-button" onClick={clearSelectedFile} title="Remove file" disabled={isFileLoading}>
             <FaTimes />

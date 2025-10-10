@@ -13,8 +13,15 @@ function App() {
   const [error, setError] = useState('');
   const resultRef = useRef(null);
   const [chatHistory, setChatHistory] = useState([]);
+  const [exportCount, setExportCount] = useState(0);
 
   const handleFileAnalyze = async (file) => {
+    if (!file) {
+      setSelectedFile(null);
+      setAnalysisResult('');
+      setError('');
+      return;
+    }
     setSelectedFile(file);
     setAnalysisResult('');
     setError('');
@@ -75,26 +82,57 @@ function App() {
   const exportPDF = async () => {
     if (!analysisResult) return;
 
+    setError(''); // Clear any previous errors before attempting export
+
     try {
+      const filename = selectedFile ? selectedFile.name.replace(/\.[^/.]+$/, "") : 'analysis';
+      setExportCount(prev => prev + 1);
       const response = await fetch('http://localhost:5000/export-pdf', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ content: analysisResult }),
+        body: JSON.stringify({ content: analysisResult, filename: filename, count: exportCount + 1 }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to export PDF from backend');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to export PDF from backend');
       }
 
       const blob = await response.blob();
+      const suggestedName = `${filename}_analysis_report_${exportCount + 1}.pdf`;
+
+      // Use File System Access API to prompt for save location if supported
+      if (window.showSaveFilePicker) {
+        try {
+          const fileHandle = await window.showSaveFilePicker({
+            suggestedName: suggestedName,
+            types: [{
+              description: 'PDF files',
+              accept: { 'application/pdf': ['.pdf'] },
+            }],
+          });
+          const writable = await fileHandle.createWritable();
+          await writable.write(blob);
+          await writable.close();
+          console.log('PDF saved successfully via File System Access API');
+        } catch (fsError) {
+          if (fsError.name !== 'AbortError') {
+            throw fsError; // Re-throw if not user cancellation
+          }
+          // Fall through to legacy download if user cancels or errors
+        }
+      }
+
+      // Fallback to legacy download method
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'analysis-results.pdf');
+      link.setAttribute('download', suggestedName);
       document.body.appendChild(link);
       link.click();
+      window.URL.revokeObjectURL(url); // Clean up the URL object
       link.parentNode.removeChild(link);
     } catch (err) {
       console.error('PDF export failed:', err);
@@ -144,18 +182,9 @@ function App() {
           isFileLoading={isFileLoading}
           isChatLoading={isChatLoading}
           selectedFile={selectedFile}
+          onExport={exportPDF}
+          hasResults={!!analysisResult}
         />
-        <div className="right-controls">
-          {analysisResult && (
-            <button
-              onClick={exportPDF}
-              className="export-button"
-              title="Export to PDF"
-            >
-              Export to PDF
-            </button>
-          )}
-        </div>
       </div>
     </div>
   );
