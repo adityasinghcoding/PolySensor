@@ -24,6 +24,30 @@ export const analyzeFile = async (file) => {
    }
 };
 
+export const analyzeText = async (text) => {
+   try {
+      const response = await fetch(`${API_BASE_URL}/chat`, {
+         method: 'POST',
+         headers: {
+            'Content-Type': 'application/json',
+         },
+         body: JSON.stringify({ question: text }),
+      });
+
+      if (!response.ok) {
+         const errorData = await response.json().catch(() => ({}));
+         throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.answer;
+
+   } catch (error) {
+      console.error('API call failed:', error);
+      throw error;
+   }
+};
+
 
 // Utility function to detect the file type
 export const getFileCategory = (fileName) => {

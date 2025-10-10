@@ -16,8 +16,12 @@ from data_handling import (
 from io import BytesIO
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
+from reportlab.platypus import Table, TableStyle, Paragraph, SimpleDocTemplate, Spacer
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib import colors
+from reportlab.lib.units import inch
 # import mimetypes
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, session, send_from_directory, send_file
 from flask_cors import CORS
 
 load_dotenv(find_dotenv())  # loading the environment variables from .env
@@ -57,15 +61,40 @@ image_extensions = ('.jpg', '.png', '.jpeg', '.webp', '.heif')
 audio_extensions = ('.mp3', '.wav', '.aiff', '.aac', '.ogg', '.flac')
 video_extensions = ('.mp4', '.mpeg', '.mov', '.avi', '.x-flav', '.mpg', '.webm', '.wmv', '.3gpp')
 
-app = Flask(__name__)
-CORS(app)  # this allows react app to communicate with this backend
+polysensor = Flask(__name__)
+polysensor.secret_key = os.getenv("FLASK_SECRET_KEY", "supersecretkey")  # Set a secret key for session management
+CORS(polysensor, resources={r"/*": {"origins": ["http://localhost:5173", "http://localhost:5174"]}})  # allow frontend origins
 
-@app.route('/analyze0', methods=['POST'])
+
+@polysensor.route('/chat', methods=['POST'])
+def chat_llm():
+   try:
+      # initializing chat history
+      session.setdefault('chat_history', [])
+      user_query = request.json.get('query')
+
+      # Adding user messages to history(list)
+      session['chat_history'].append({'role': 'user', 'question': user_query})
+
+      # llm response on user query
+      llm_reply = llm.invoke(user_query)
+      session['chat_history'].append({'role': 'llm', 'answer': llm_reply.content})
+
+      # sending full history to frontend
+      return jsonify({'chats': session['chat_history']})
+   except Exception as e:
+      return jsonify({'error': str(e)}), 500
+
+
+
+@polysensor.route('/analyze0', methods=['POST'])
 def analyze_file():
    file_path = None
    try:
       if 'file' not in request.files:
          return jsonify({'error': 'No file provided'}), 400
+
+      global file
 
       file = request.files['file']
       if file.filename == '':
@@ -180,37 +209,250 @@ def analyze_file():
          os.remove(file_path)
 
 # New endpoint for PDF export
-@app.route('/export-pdf', methods=['POST'])
+@polysensor.route('/export-pdf', methods=['POST'])
 def export_pdf():
     try:
         data = request.get_json()
         content = data.get('content', '')
+        filename = data.get('filename', 'analysis')
+        count = data.get('count', 1)
 
-        # Create PDF in memory
+        import re
+        from reportlab.lib.colors import HexColor
+        from reportlab.pdfbase.pdfmetrics import stringWidth
+
+        def clean_content(content):
+            """Remove boilerplate phrases from analysis content."""
+            unwanted_phrases = [
+                "Analysis on textual information has finished and here are the results:",
+                "Analysis on audio information has finished and here are the results:",
+                "Analysis on image information has finished and here are the results:",
+                "Analysis on video information has finished and here are the results:"
+            ]
+            lines = content.split('\n')
+            cleaned_lines = []
+            for line in lines:
+                if not any(phrase.lower() in line.strip().lower() for phrase in unwanted_phrases):
+                    cleaned_lines.append(line)
+            return '\n'.join(cleaned_lines)
+
+        def sanitize_for_paragraph(text):
+            # Replace **bold** with <b>bold</b> for ReportLab Paragraph
+            text = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', text)
+            # Remove pipe characters for non-table text
+            text = re.sub(r'\|', '', text)
+            return text
+
+        def sanitize_for_table_cell(text):
+            # For table cells, only handle bold, no pipe removal
+            text = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', text)
+            return text
+
+        # Custom modern styles with premium theme colors
+        def create_custom_styles():
+            styles = getSampleStyleSheet()
+            # Premium title style - softer blue
+            title_style = ParagraphStyle(
+                'ModernTitle',
+                parent=styles['Heading1'],
+                fontSize=26,
+                spaceAfter=40,
+                textColor=HexColor('#3498db'),  # Modern blue
+                alignment=1,  # TA_CENTER
+                fontName='Helvetica-Bold'
+            )
+            # Premium heading style - medium grey-blue
+            heading_style = ParagraphStyle(
+                'ModernHeading',
+                parent=styles['Heading2'],
+                fontSize=18,
+                spaceAfter=15,
+                spaceBefore=15,
+                textColor=HexColor('#2c3e50'),  # Darker but softer grey-blue
+                fontName='Helvetica-Bold'
+            )
+            # Premium normal style
+            normal_style = ParagraphStyle(
+                'ModernNormal',
+                parent=styles['Normal'],
+                fontSize=11,
+                spaceAfter=8,
+                leading=14,
+                textColor=HexColor('#34495e'),
+                fontName='Helvetica'
+            )
+            # Table cell style
+            table_cell_style = ParagraphStyle(
+                'TableCell',
+                parent=styles['Normal'],
+                fontSize=10,
+                spaceAfter=4,
+                leading=12,
+                textColor=HexColor('#2c3e50'),
+                fontName='Helvetica',
+                alignment=0,  # TA_LEFT
+                leftIndent=0,
+                rightIndent=0
+            )
+            # Table header style - white text for blue background
+            table_header_style = ParagraphStyle(
+                'TableHeader',
+                parent=styles['Normal'],
+                fontSize=11,
+                textColor=colors.white,
+                fontName='Helvetica-Bold',
+                alignment=0,  # TA_LEFT
+                leftIndent=0,
+                rightIndent=0
+            )
+            styles.add(title_style)
+            styles.add(heading_style)
+            styles.add(normal_style)
+            styles.add(table_cell_style)
+            styles.add(table_header_style)
+            return styles
+
+        # Function to detect and parse Markdown tables anywhere
+        def find_and_parse_tables(lines, i, styles):
+            # Look for table start: header row with |
+            while i < len(lines):
+                line = lines[i].strip()
+                if line.startswith('|') and '|' in line[1:]:
+                    # Potential header
+                    headers_raw = [h.strip() for h in line.split('|') if h.strip()]
+                    if len(headers_raw) > 1:
+                        i += 1
+                        # Check for separator
+                        if i < len(lines):
+                            sep_line = lines[i].strip()
+                            if '---' in sep_line and sep_line.startswith('|'):
+                                i += 1
+                                # Collect rows
+                                rows = []
+                                while i < len(lines):
+                                    row_line = lines[i].strip()
+                                    if row_line.startswith('|') and '---' not in row_line:
+                                        cells_raw = [cell.strip() for cell in row_line.split('|') if cell.strip()]
+                                        if len(cells_raw) == len(headers_raw):
+                                            cells = [sanitize_for_table_cell(cell) for cell in cells_raw]
+                                            rows.append([Paragraph(cell, styles['TableCell']) for cell in cells])
+                                        i += 1
+                                    else:
+                                        break
+                                if rows:  # At least one row
+                                    headers = [sanitize_for_table_cell(h) for h in headers_raw]
+                                    header_row = [Paragraph(h, styles['TableHeader']) for h in headers]
+                                    # Calculate equal column widths
+                                    num_cols = len(headers)
+                                    content_width = 468  # letter width 612 - 72*2 margins
+                                    col_widths = [content_width / num_cols] * num_cols
+                                    table = Table([header_row] + rows, colWidths=col_widths)
+                                    table.setStyle(TableStyle([
+                                        # Premium table styling
+                                        ('BACKGROUND', (0, 0), (-1, 0), HexColor('#3498db')),
+                                        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+                                        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                                        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                                        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                                        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+                                        ('FONTSIZE', (0, 0), (-1, 0), 11),
+                                        ('FONTSIZE', (0, 1), (-1, -1), 10),
+                                        ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
+                                        ('TOPPADDING', (0, 0), (-1, 0), 10),
+                                        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+                                        ('GRID', (0, 0), (-1, -1), 0.5, HexColor('#bdc3c7')),  # Light grey
+                                        ('LEFTPADDING', (0, 0), (-1, -1), 8),
+                                        ('RIGHTPADDING', (0, 0), (-1, -1), 8),
+                                        ('TOPPADDING', (0, 1), (-1, -1), 6),
+                                        ('BOTTOMPADDING', (0, 1), (-1, -1), 6),
+                                    ]))
+                                    story.append(table)
+                                    story.append(Spacer(1, 15))
+                                    return i  # Continue from here
+                i += 1
+            return i
+
+        # Enhanced Markdown parser
+        def parse_markdown_content(content, styles):
+            content = clean_content(content)
+            lines = content.split('\n')
+            i = 0
+            while i < len(lines):
+                line = lines[i].lstrip()
+                if not line:
+                    i += 1
+                    continue
+
+                # Handle headings ## or ###
+                if line.startswith('###'):
+                    clean_heading = line[4:].strip()
+                    sanitized_heading = sanitize_for_paragraph(clean_heading)
+                    if sanitized_heading:
+                        p = Paragraph(sanitized_heading, styles['ModernHeading'])
+                        story.append(p)
+                    i += 1
+                    continue
+                elif line.startswith('##'):
+                    clean_heading = line[3:].strip()
+                    sanitized_heading = sanitize_for_paragraph(clean_heading)
+                    if sanitized_heading:
+                        p = Paragraph(sanitized_heading, styles['ModernHeading'])
+                        story.append(p)
+                    i += 1
+                    continue
+
+                # Detect and parse tables anywhere
+                i = find_and_parse_tables(lines, i, styles)
+                if i >= len(lines):
+                    break
+
+                # Regular text
+                if not line.startswith('|'):
+                    sanitized_line = sanitize_for_paragraph(line)
+                    if sanitized_line:
+                        p = Paragraph(sanitized_line, styles['ModernNormal'])
+                        story.append(p)
+                i += 1
+
+        # Footer function for all pages
+        def add_footer(canvas, doc):
+            canvas.saveState()
+            canvas.setFont('Helvetica-Oblique', 8)
+            canvas.setFillColor(HexColor('#bdc3c7'))
+            text = "Generated by PolySensor - Advanced AI Analysis Platform"
+            text_width = stringWidth(text, 'Helvetica-Oblique', 8)
+            x = (612 - text_width) / 2  # Center on letter width
+            canvas.drawString(x, 30, text)
+            canvas.restoreState()
+
         buffer = BytesIO()
-        p = canvas.Canvas(buffer, pagesize=letter)
-        width, height = letter
+        doc = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=72, leftMargin=72, topMargin=72, bottomMargin=72)
+        styles = getSampleStyleSheet()
+        story = []
 
-        # Simple text wrapping for PDF
-        lines = content.split('\n')
-        y = height - 40
-        for line in lines:
-            if y < 40:
-                p.showPage()
-                y = height - 40
-            p.drawString(40, y, line)
-            y -= 14
+        # Use custom styles
+        styles = create_custom_styles()
 
-        p.save()
+        # Add premium title with branding
+        if filename:
+            title_text = f"<b>Analysis Report: {filename}</b><br/><font size=10 color='#7f8c8d'>Generated by PolySensor</font>"
+            title = Paragraph(title_text, styles['ModernTitle'])
+            story.append(title)
+            story.append(Spacer(1, 30))
+
+        parse_markdown_content(content, styles)
+
+        doc.build(story, onFirstPage=add_footer, onLaterPages=add_footer)
         buffer.seek(0)
 
-        return send_file(buffer, as_attachment=True, download_name='analysis-results.pdf', mimetype='application/pdf')
+        return send_file(buffer, as_attachment=True, download_name=f'{filename}_analysis_report_{count}.pdf', mimetype='application/pdf')
     except Exception as e:
+        print(f"PDF generation error: {str(e)}")  # Log error for debugging
         return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
    port = int(os.environ.get('PORT', 5000))
-   app.run(host='0.0.0.0', port=port, debug=True)
+   polysensor.run(host='0.0.0.0', port=port, debug=True)
 
    # if file_path.lower().endswith(('.mp4', '.mkv')):
    # video_text_data, video_audio_data = video_audio_text(file_path, interval_sec = 3)
