@@ -2,7 +2,7 @@ import React from "react";
 import AnalysisResults from '../components/AnalysisResults';
 import Loading from '../components/Loading/Loading';
 
-function AnalyzePage({ selectedFile, analysisResult, error, isLoading, resultRef }) {
+function AnalyzePage({ analysisResult, error, isLoading, resultRef }) {
    return (
       <div className="analyze-page">
          {error && (

@@ -17,161 +17,7 @@
   padding-bottom: 4rem; /* create space at bottom */
 }
 
-/* Modern Hamburger Menu Styles */
-.hamburger {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  width: 24px;
-  height: 20px;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  z-index: 1001;
-}
-
-.hamburger:hover {
-  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%);
-  transform: scale(1.05);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
-
-.hamburger::before,
-.hamburger::after,
-.hamburger span {
-  content: '';
-  display: block;
-  height: 2px;
-  width: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 2px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: absolute;
-  left: 0;
-}
-
-.hamburger::before {
-  top: 0;
-}
-
-.hamburger span {
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.hamburger::after {
-  bottom: 0;
-}
-
-.hamburger.open::before {
-  top: 50%;
-  transform: translateY(-50%) rotate(45deg);
-}
-
-.hamburger.open span {
-  opacity: 0;
-}
-
-.hamburger.open::after {
-  bottom: 50%;
-  transform: translateY(50%) rotate(-45deg);
-}
-
-.menu-dropdown {
-  position: absolute;
-  bottom: 100%;
-  right: 0;
-  background: linear-gradient(135deg, rgba(0,0,0,0.95) 0%, rgba(20,20,40,0.95) 100%);
-  backdrop-filter: blur(20px);
-  border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255,255,255,0.05);
-  min-width: 160px;
-  z-index: 1000;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(4px);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  margin-bottom: 4px;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.menu-dropdown.open {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.menu-item {
-  display: block;
-  padding: 14px 20px;
-  color: #ffffff;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  font-family: 'Poppins', sans-serif;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-  position: relative;
-}
-
-.menu-item::before {
-  content: '📄';
-  position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 14px;
-  opacity: 0.8;
-}
-
-.menu-item:hover {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
-  color: #ffffff;
-  padding-left: 28px;
-}
-
-.menu-item:hover::before {
-  content: '📄';
-  left: 16px;
-}
-
-.menu-item:hover::after {
-  content: '→';
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 12px;
-  opacity: 0.8;
-}
-
-.menu-item:last-child {
-  border-bottom: none;
-  border-radius: 0 0 12px 12px;
-}
-
-.menu-item:first-child {
-  border-radius: 12px 12px 0 0;
-}
-
-.menu-item:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  background: none;
-}
-
-.menu-item:disabled:hover {
-  background: none;
-  padding-left: 20px;
-  transform: none;
-}
-
+/* Below polysensor before shrink */
 .app-header {
   background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
   backdrop-filter: blur(20px);
@@ -221,7 +67,7 @@
   align-self: center;
 }
 
-.app-header h1 {
+/* .app-header h1 {
   font-family: 'Poppins', sans-serif;
   margin: 0 0 0.5rem 0;
   font-size: 6rem;
@@ -231,18 +77,19 @@
   background-clip: text;
   position: relative;
   transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
+} */
 
 .app.shrink .app-header h1 {
-  font-size: 1.8rem;
+  font-size: 2.6rem;
   font-weight: 700;
 }
 
+/* Below polysensor before shrink */
 .app-header p {
   font-family: 'Poppins', sans-serif;
   font-style: italic;
   position: absolute;
-  top: 86%;
+  top: 85%;
   left: 50%;
   transform: translateX(-50%);
   margin: 0;
@@ -280,11 +127,11 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Header branding adjustments */
+/* PolySensor look adjustments before on home page */
 .app-header {
   background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
   backdrop-filter: blur(20px);
-  padding: 3rem 4rem;
+  padding: 3rem 3rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -302,7 +149,7 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  gap: 40px;
+  gap: 10px;
 }
 
 .app-logo {
@@ -468,7 +315,7 @@
 }
 
 .app.shrink .app-main {
-  padding-top: 8rem;
+  padding-top: 3rem;
 }
 
 .analyze-controls {
@@ -588,9 +435,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  max-width: 500px;
+  gap: 10px;
+  max-width: 200px;
   text-align: center;
+  /* transform: translateY(400%); */
+  
 }
 
 .error-message::before {
