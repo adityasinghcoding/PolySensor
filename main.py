@@ -39,14 +39,14 @@ if not GOOGLE_API_KEY:
 llm = ChatGoogleGenerativeAI(model='gemini-2.5-pro', google_api_key=GOOGLE_API_KEY)
 
 document_prompt = PromptTemplate(input_variables=['doc_json_data'], template=DOCUMENT_PROMPT)
-# audio_prompt = PromptTemplate(input_variables=['audio_data'], template=AUDIO_PROMPT)
-# image_prompt = PromptTemplate(input_variables=['image_data'], template=IMAGE_PROMPT)
-# video_prompt = PromptTemplate(input_variables=['video_data'], template=VIDEO_PROMPT)
+# audio_prompt = PromptTemplate(input_variables=['audio_data'], template=AUDIO_PROMPT)  # Unused
+# image_prompt = PromptTemplate(input_variables=['image_data'], template=IMAGE_PROMPT)  # Unused
+# video_prompt = PromptTemplate(input_variables=['video_data'], template=VIDEO_PROMPT)  # Unused
 
 document_chain = LLMChain(llm=llm, prompt=document_prompt)
-# image_chain = LLMChain(llm=llm, prompt = image_prompt)
-# audio_chain = LLMChain(llm=llm, prompt = audio_prompt)
-# video_chain = LLMChain(llm=llm, prompt = video_prompt)
+# image_chain = LLMChain(llm=llm, prompt = image_prompt)  # Unused
+# audio_chain = LLMChain(llm=llm, prompt = audio_prompt)  # Unused
+# video_chain = LLMChain(llm=llm, prompt = video_prompt)  # Unused
 
 doc_extensions = (
     '.cwk', '.mcw', '.csv', '.dif', '.dbf', '.eml', '.msg', '.p7s', '.epub',

@@ -49,28 +49,28 @@ export const analyzeText = async (text) => {
 };
 
 
-// Utility function to detect the file type
-export const getFileCategory = (fileName) => {
-   const extension = fileName.toLowerCase().split('.').pop();
+// Utility function to detect the file type - unused, commenting out
+// export const getFileCategory = (fileName) => {
+//    const extension = fileName.toLowerCase().split('.').pop();
 
-   const documentExtensions = [
-  'cwk', 'mcw', 'csv', 'dif', 'dbf', 'eml', 'msg', 'p7s', 'epub',
-  'htm', 'html', 'bmp', 'heic', 'prn', 'tiff',
-  'md', 'odt', 'org', 'eth', 'pbd', 'sdp', 'pdf', 'txt', 'pot',
-  'ppt', 'pptm', 'pptx', 'rst', 'rtf', 'et', 'fods', 'mw', 'xls',
-  'xlsx', 'sxg', 'tsv', 'abw', 'doc', 'docm', 'docx', 'dot', 'dotm',
-  'hwp', 'zabw', 'xml'
-   ];
+//    const documentExtensions = [
+//   'cwk', 'mcw', 'csv', 'dif', 'dbf', 'eml', 'msg', 'p7s', 'epub',
+//   'htm', 'html', 'bmp', 'heic', 'prn', 'tiff',
+//   'md', 'odt', 'org', 'eth', 'pbd', 'sdp', 'pdf', 'txt', 'pot',
+//   'ppt', 'pptm', 'pptx', 'rst', 'rtf', 'et', 'fods', 'mw', 'xls',
+//   'xlsx', 'sxg', 'tsv', 'abw', 'doc', 'docm', 'docx', 'dot', 'dotm',
+//   'hwp', 'zabw', 'xml'
+//    ];
 
-   const imageExtensions = ['jpg', 'png', 'jpeg', 'webp', 'heif'];
-   const audioExtensions = ['mp3', 'wav', 'aiff', 'aac', 'ogg', 'flac'];
-   const videoExtensions = ['mp4', 'mpeg', 'mov', 'avi', 'x-flav', 'mpg', 'webm', 'wmv', '3gpp'];
+//    const imageExtensions = ['jpg', 'png', 'jpeg', 'webp', 'heif'];
+//    const audioExtensions = ['mp3', 'wav', 'aiff', 'aac', 'ogg', 'flac'];
+//    const videoExtensions = ['mp4', 'mpeg', 'mov', 'avi', 'x-flav', 'mpg', 'webm', 'wmv', '3gpp'];
 
-   // detecting file type and checking from mentioned extensions
-   if (documentExtensions.includes(extension)) return 'document';
-   if (imageExtensions.includes(extension)) return 'image';
-   if (audioExtensions.includes(extension)) return 'audio';
-   if (videoExtensions.includes(extension)) return 'video';
+//    // detecting file type and checking from mentioned extensions
+//    if (documentExtensions.includes(extension)) return 'document';
+//    if (imageExtensions.includes(extension)) return 'image';
+//    if (audioExtensions.includes(extension)) return 'audio';
+//    if (videoExtensions.includes(extension)) return 'video';
 
-   return 'unknown';
-};
+//    return 'unknown';
+// };

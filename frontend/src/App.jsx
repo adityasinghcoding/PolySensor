@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import AnalyzePage from './pages/AnalyzePage';
 import InputArea from './components/InputArea';
 import './App.css';
@@ -11,7 +11,7 @@ function App() {
   const [isFileLoading, setIsFileLoading] = useState(false);
   const [isChatLoading, setIsChatLoading] = useState(false);
   const [error, setError] = useState('');
-  const resultRef = useRef(null);
+  // const resultRef = useRef(null);  // Unused, commenting out
   const [chatHistory, setChatHistory] = useState([]);
   const [exportCount, setExportCount] = useState(0);
 
@@ -149,12 +149,11 @@ function App() {
       </header>
 
       <main className='app-main'>
-        <AnalyzePage 
-          selectedFile={selectedFile} 
-          analysisResult={analysisResult} 
-          error={error} 
+        <AnalyzePage
+          selectedFile={selectedFile}
+          analysisResult={analysisResult}
+          error={error}
           isLoading={isFileLoading}
-          resultRef={resultRef}
         />
       </main>
 

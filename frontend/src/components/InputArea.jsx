@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { FaPaperclip, FaMicrophone, FaMicrophoneSlash, FaPaperPlane, FaTimes, FaFileExport } from 'react-icons/fa';
+import { FaPaperclip, FaPaperPlane, FaTimes, FaFileExport } from 'react-icons/fa';
 import './InputArea.css';
 
 function InputArea({ onAnalyze, onFileAnalyze, onChatMessage, selectedFile, isFileLoading, isChatLoading, onExport, hasResults }) {
   const [inputText, setInputText] = useState('');
-  const [isMicMuted, setIsMicMuted] = useState(true);
+  // const [isMicMuted, setIsMicMuted] = useState(true);  // Unused, commenting out
   const fileInputRef = useRef(null);
 
   const handleInputChange = (e) => {
@@ -47,9 +47,9 @@ function InputArea({ onAnalyze, onFileAnalyze, onChatMessage, selectedFile, isFi
     e.target.value = null; // reset file input
   };
 
-  const handleMicClick = () => {
-    setIsMicMuted(!isMicMuted);
-  };
+  // const handleMicClick = () => {
+  //   setIsMicMuted(!isMicMuted);
+  // };  // Unused, commenting out
 
   const clearSelectedFile = (e) => {
     e.stopPropagation();
@@ -100,9 +100,9 @@ function InputArea({ onAnalyze, onFileAnalyze, onChatMessage, selectedFile, isFi
         onChange={handleFileChange}
         disabled={isFileLoading}
       />
-      <button className="icon-button" title={isMicMuted ? "Unmute Microphone" : "Mute Microphone"} onClick={handleMicClick} disabled={isFileLoading}>
+      {/* <button className="icon-button" title={isMicMuted ? "Unmute Microphone" : "Mute Microphone"} onClick={handleMicClick} disabled={isFileLoading}>
         {isMicMuted ? <FaMicrophoneSlash /> : <FaMicrophone />}
-      </button>
+      </button> */}  {/* Unused, commenting out */}
       <button className="icon-button" title="Export" onClick={handleExportClick} disabled={isFileLoading || !hasResults}>
         <FaFileExport />
       </button>
