@@ -7,7 +7,12 @@ function AnalyzePage({ analysisResult, error, isLoading, resultRef }) {
       <div className="analyze-page">
          {error && (
             <div className="error-message">
-               {error}
+               {error.split('\n').map((line, index) => (
+                  <React.Fragment key={index}>
+                     {line}
+                     {index < error.split('\n').length - 1 && <br />}
+                  </React.Fragment>
+               ))}
             </div>
          )}
 

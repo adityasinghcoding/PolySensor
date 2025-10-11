@@ -4,7 +4,7 @@ langchain-core==0.3.77
 langchain-google-genai==2.1.12
 # unstructured==0.18.15
 unstructured
-pydub
+mutagen
 moviepy==1.0.3
 reportlab
 flask==3.1.2

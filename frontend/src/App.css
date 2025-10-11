@@ -436,7 +436,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  max-width: 200px;
+  max-width: relative;
   text-align: center;
   /* transform: translateY(400%); */
   
@@ -445,4 +445,5 @@
 .error-message::before {
   content: '⚠️';
   font-size: 16px;
+  margin-right: 8px;
 }

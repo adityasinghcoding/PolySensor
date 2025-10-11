@@ -59,6 +59,14 @@ doc_extensions = (
 
 image_extensions = ('.jpg', '.png', '.jpeg', '.webp', '.heif')
 audio_extensions = ('.mp3', '.wav', '.aiff', '.aac', '.ogg', '.flac')
+audio_mime_types = {
+    '.mp3': 'audio/mpeg',
+    '.wav': 'audio/wav',
+    '.flac': 'audio/flac',
+    '.aac': 'audio/aac',
+    '.ogg': 'audio/ogg',
+    '.aiff': 'audio/aiff'
+}
 video_extensions = ('.mp4', '.mpeg', '.mov', '.avi', '.x-flav', '.mpg', '.webm', '.wmv', '.3gpp')
 
 polysensor = Flask(__name__)
@@ -147,9 +155,11 @@ def analyze_file():
             return jsonify({'error': audio_result}), 400
          audio_path = audio_result
          if audio_path:
-               buffer = BytesIO()
-               audio_path.export(buffer, format='mp3')
-               audio_bytes = buffer.getvalue()
+               with open(audio_path, "rb") as f:
+                  audio_bytes = f.read()
+               # Determine mime type
+               ext = file_path.lower().rsplit('.', 1)[-1]
+               mime_type = audio_mime_types.get('.' + ext, 'audio/mpeg')
 
                prompt_with_audio = HumanMessage([
                   {
@@ -158,7 +168,7 @@ def analyze_file():
                   },
                   {
                      'type': 'media',
-                     'mime_type': 'audio/mp3',
+                     'mime_type': mime_type,
                      'data': base64.b64encode(audio_bytes).decode('utf-8')
                   }
                ])

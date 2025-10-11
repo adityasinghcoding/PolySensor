@@ -2,7 +2,7 @@ import os
 from unstructured.partition.auto import partition #Detects the file type
 from unstructured.staging.base import elements_to_json # For converting/preparing the content into json
 # import speech_recognition as sr
-from pydub import AudioSegment
+from mutagen import File
 # import pytesseract as pt
 # from PIL import Image
 # import moviepy.editor as mpe
@@ -128,13 +128,16 @@ def audio(audio):
         err = f"File doesn't exist, recheck the given file path: {audio}!\n"
         return err
 
-    # Limiting video length
+    # Limiting audio length
     try:
-        audio = AudioSegment.from_file(audio)
-        if len(audio) > 60*1000:  # 1 min audio length limit, pydub works on milliseconds fundamentally so feeding accordingly
-            in_minute = len(audio) / 1000
-            in_minute = in_minute / 60
-            limit_message = f"Audio length is {in_minute:.2f} min which exceeds 1 minute.\nFor longer audio input think once to subscribe our monthly premium!"
+        audio_file = File(audio)
+        if audio_file is None:
+            err = f"Audio: {audio} is not supported or corrupted"
+            return err
+        length = audio_file.info.length
+        if length > 60:  # 1 min audio length limit
+            in_minute = length / 60
+            limit_message = f"Audio length is {in_minute:.2f} min which exceeds 1 minute.\nFor longer audio, think once to subscribe our monthly premium!"
             return limit_message
         else:
             return audio
@@ -153,9 +156,9 @@ def image(image):
 
 def video(video):
     video = os.path.normpath(video)
-    if not os.path.exists(video):
-        err = f"File doesn't exist, recheck the given file path: {video}!\n"
-        return err
+    # if not os.path.exists(video):
+    #     err = f"File doesn't exist, recheck the given file path: {video}!\n"
+    #     return err
     
     # Limiting video length
     try:
@@ -163,7 +166,7 @@ def video(video):
             if clip.duration > 30:  # 30 sec video length limit
                 duration = clip.duration
                 duration = duration / 60
-                limit_message = f"Video length is {duration:.2f} min which exceeds 30 seconds.\nFor longer video input think once to subscribe our monthly premium!"
+                limit_message = f"Video length is {duration:.2f} min which exceeds 30 seconds.\nFor longer video, think once to subscribe our monthly premium!"
                 return limit_message
             else:
                 return video
